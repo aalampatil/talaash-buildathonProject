@@ -27,7 +27,6 @@ const landlordSchema = new mongoose.Schema(
 
       profilePicture: {
         type: String,
-        required: true,
       },
       profilePicture_publicId: {
         type: String,

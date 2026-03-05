@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { requireAuth } from "@clerk/express";
 
 import {
   registerUser,
@@ -19,10 +18,10 @@ userRouter
   .route("/register")
   .post(upload.single("profilePicture"), registerUser);
 userRouter.route("/login").post(loginUser);
-userRouter.route("/logout").post(requireAuth(), logoutUser);
-userRouter.route("/me").get(requireAuth(), getCurrentUser);
-userRouter.route("/update-account").patch(requireAuth(), updateAccountDetails);
-userRouter.route("/change-password").patch(requireAuth(), changePassword);
+userRouter.route("/logout").post(verifyJWT, logoutUser);
+userRouter.route("/me").get(verifyJWT, getCurrentUser);
+userRouter.route("/update-account").patch(verifyJWT, updateAccountDetails);
+userRouter.route("/change-password").patch(verifyJWT, changePassword);
 userRouter
   .route("/update-profile")
-  .patch(requireAuth(), upload.single("profilePicture"), updateProfilePicture);
+  .patch(verifyJWT, upload.single("profilePicture"), updateProfilePicture);

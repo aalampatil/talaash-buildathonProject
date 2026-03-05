@@ -3,11 +3,14 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 const app = express();
-app.use(clerkMiddleware());
 
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      process.env.CLIENT,
+    ],
     credentials: true,
   }),
 );

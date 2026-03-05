@@ -8,6 +8,7 @@ import {
   approveVisit,
   rejectVisit,
 } from "../controllers/landlord.controller.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -16,7 +17,7 @@ landlordRouter.use(verifyJWT);
 
 landlordRouter.get("/profile", getLandlordProfile);
 
-landlordRouter.post("/property", createProperty);
+landlordRouter.post("/property", upload.fields([]), createProperty);
 
 landlordRouter.delete("/property/:propertyId", deleteProperty);
 

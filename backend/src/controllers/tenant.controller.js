@@ -99,6 +99,26 @@ export const removeSavedProperty = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, tenant.savedProperties, "Property removed"));
 });
 
+export const getTenantVisits = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const tenant = await TenantModel.findOne({ userId });
+
+  if (!tenant) {
+    throw new ApiError(404, "Tenant not found");
+  }
+
+  const visits = await VisitModel.find({
+    tenantId: tenant._id,
+  })
+    .populate("propertyId")
+    .populate("landlordId");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, visits, "Tenant visits fetched successfully"));
+});
+
 export const requestVisit = asyncHandler(async (req, res) => {
   const { propertyId, visitDate } = req.body;
 

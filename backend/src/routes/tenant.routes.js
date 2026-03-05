@@ -9,6 +9,7 @@ import {
   getRecommendedProperties,
   requestVisit,
   cancelVisit,
+  getTenantVisits,
 } from "../controllers/tenant.controller.js";
 
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -22,5 +23,6 @@ tenantRouter.patch("/preferences", updateTenantPreferance);
 tenantRouter.post("/save-property/:propertyId", saveProperty);
 tenantRouter.delete("/remove-property/:propertyId", removeSavedProperty);
 tenantRouter.get("/recommended-properties", getRecommendedProperties);
+tenantRouter.get("/visits", getTenantVisits);
 tenantRouter.post("/request-visit", requestVisit);
 tenantRouter.delete("/cancel-visit/:visitId", cancelVisit);

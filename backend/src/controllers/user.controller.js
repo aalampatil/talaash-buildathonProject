@@ -8,13 +8,10 @@ import {
 import { UserModel, TenantModel, LandlordModel } from "../models/models.js";
 import { accessCookieOptions, refreshCookieOptions } from "../config/token.js";
 import { generateAccessAndRefreshTokens } from "../config/token.js";
-import { getAuth } from "@clerk/express";
 
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password, mobile, role } = req.body;
-  if (
-    [name, email, password, mobile, role].some((field) => field?.trim() === "")
-  ) {
+  if ([name, email, password, role].some((field) => field?.trim() === "")) {
     throw new ApiError(400, "all fields are required");
   }
 
@@ -48,6 +45,10 @@ export const registerUser = asyncHandler(async (req, res) => {
     profilePicture,
     profilePicture_publicId,
   });
+
+  if (!user) {
+    throw new ApiError(500, "failed to creat user");
+  }
 
   if (user.role === "tenant") {
     await TenantModel.create({
