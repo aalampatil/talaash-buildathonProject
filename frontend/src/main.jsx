@@ -13,11 +13,25 @@ import { UserContextProvider } from "./context/UserContext.jsx";
 import { AdminContextProvider } from "./context/AdminContext.jsx";
 import { LandlordContextProvider } from "./context/LandlordContext.jsx";
 import { PropertyContextProvider } from "./context/PropertyContext.jsx";
+import { StrictMode } from "react";
+import Login from "./Google-Login/Login.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: (
+      <AuthContextProvider>
+        <UserContextProvider>
+          <AdminContextProvider>
+            <LandlordContextProvider>
+              <PropertyContextProvider>
+                <App />
+              </PropertyContextProvider>
+            </LandlordContextProvider>
+          </AdminContextProvider>
+        </UserContextProvider>
+      </AuthContextProvider>
+    ),
     children: [
       {
         path: "",
@@ -28,7 +42,7 @@ const router = createBrowserRouter([
         element: <ExploreProperties />,
       },
       {
-        path: "/property",
+        path: `/property/:id`,
         element: <Property />,
       },
       {
@@ -39,24 +53,20 @@ const router = createBrowserRouter([
         path: "/filter-properties",
         element: <FilterProperties />,
       },
-      {
-        path: "/account",
-        element: <TenantProfile />,
-      },
     ],
+  },
+  {
+    path: "/account",
+    element: <TenantProfile />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <AuthContextProvider>
-    <UserContextProvider>
-      <AdminContextProvider>
-        <LandlordContextProvider>
-          <PropertyContextProvider>
-            <RouterProvider router={router} />
-          </PropertyContextProvider>
-        </LandlordContextProvider>
-      </AdminContextProvider>
-    </UserContextProvider>
-  </AuthContextProvider>,
+  <StrictMode>
+    <RouterProvider router={router} />
+  </StrictMode>,
 );

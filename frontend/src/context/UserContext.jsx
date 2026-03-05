@@ -37,7 +37,8 @@ export const UserContextProvider = ({ children }) => {
   };
   const fetchVisits = async () => {
     try {
-      await axiosApi.get("/tenant/visits");
+      const response = await axiosApi.get("/tenant/visits");
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -55,6 +56,7 @@ export const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     verified();
+    fetchVisits();
   });
 
   const value = {

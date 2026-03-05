@@ -26,7 +26,7 @@ export default function AppSidebar() {
                 <Link>Saved Property</Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <Link>Visits</Link>
+                <Link to="/visits">Visits</Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link>Logout</Link>

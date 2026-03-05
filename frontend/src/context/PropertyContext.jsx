@@ -1,14 +1,48 @@
 import { createContext, useContext, useState } from "react";
+import { axiosApi } from "../config/axiosApi";
+import { useNavigate } from "react-router";
 
 const PropertyContext = createContext();
 
 export const PropertyContextProvider = ({ children }) => {
-  const [properties, setProperties] = useState({});
+  const navigate = useNavigate();
+  const [properties, setProperties] = useState([]);
+  const [property, setProperty] = useState({});
 
-  const handleSearch = (location, budget) => {};
+  //filter
+  const handleSearch = async (city, rent) => {
+    try {
+      const response = await axiosApi("/property/search", {
+        params: { city: city, rent: rent },
+      });
+      if (response.data.success) {
+        setProperties(response.data.data);
+      }
+      navigate("/filter-properties");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  //inividual property
+  const searchProperty = async (id) => {
+    try {
+      const response = await axiosApi.get(`/property/${id}`);
+      console.log(response.data);
+      if (response.data.success) {
+        setProperty(response.data.data);
+      }
+      navigate(`/property/${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const value = {
     handleSearch,
+    properties,
+    searchProperty,
+    property,
+    setProperty,
   };
   return (
     <PropertyContext.Provider value={value}>

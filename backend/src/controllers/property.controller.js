@@ -30,30 +30,23 @@ export const getProperty = asyncHandler(async (req, res) => {
 });
 
 export const searchProperties = asyncHandler(async (req, res) => {
-  const { city, area, minRent, maxRent, propertyType } = req.query;
+  const { city, rent, propertyType } = req.query;
 
-  const filter = {};
+  const filter = {
+    status: "available",
+  };
 
   if (city) {
-    filter["location.city"] = city;
-  }
-
-  if (area) {
-    filter["location.area"] = area;
+    filter["location.city"] = { $regex: city, $options: "i" };
   }
 
   if (propertyType) {
     filter.propertyType = propertyType;
   }
 
-  if (minRent || maxRent) {
-    filter.rent = {};
-
-    if (minRent) filter.rent.$gte = Number(minRent);
-    if (maxRent) filter.rent.$lte = Number(maxRent);
+  if (rent) {
+    filter.rent = { $lte: parseInt(rent) };
   }
-
-  filter.status = "available";
 
   const properties = await PropertyModel.find(filter);
 

@@ -1,13 +1,13 @@
 import { Heart } from "lucide-react";
-import { useNavigate } from "react-router";
+import { UsePropertyContext } from "../context/PropertyContext";
 
 function PropertyCard({ id, image, title, price }) {
-  const navigate = useNavigate();
+  const { searchProperty } = UsePropertyContext();
 
   return (
     <div
       className="w-full md:min-w-[48%] cursor-pointer"
-      onClick={() => navigate(`/property/:${id}`)}
+      onClick={() => searchProperty(id)}
     >
       <div className="relative">
         <img

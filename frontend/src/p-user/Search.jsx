@@ -1,16 +1,11 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { useNavigate } from "react-router";
+import { UsePropertyContext } from "../context/PropertyContext";
 
 function SearchFilter() {
-  const [location, setLocation] = useState("");
-  const [budget, setBudget] = useState("");
-  const navigate = useNavigate();
-
-  const handleSearch = () => {
-    console.log({ location, budget });
-    navigate("/filter-properties");
-  };
+  const [city, setCity] = useState("Delhi");
+  const [rent, setRent] = useState(5000);
+  const { handleSearch } = UsePropertyContext();
 
   return (
     <div className="w-full flex justify-center px-2">
@@ -24,10 +19,10 @@ function SearchFilter() {
 
             <select
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={(e) => setCity(e.target.value)}
               className="outline-none text-xs text-gray-700 bg-transparent"
             >
-              <option value="">Select city</option>
+              <option value="">{city}</option>
               <option value="Delhi">Delhi</option>
               <option value="Mumbai">Mumbai</option>
               <option value="Bangalore">Bangalore</option>
@@ -50,14 +45,16 @@ function SearchFilter() {
               Budget
             </span>
             <select
-              value={budget}
-              onChange={(e) => setBudget(e.target.value)}
+              value={rent}
+              onChange={(e) => setRent(e.target.value)}
               className="outline-none text-xs bg-transparent text-gray-700"
             >
-              <option value="">Select range</option>
-              <option value="5000-10000">Rs5000 - Rs10000</option>
-              <option value="10000-20000">Rs10000 - Rs20000</option>
-              <option value="20000-30000">Rs20000 - Rs30000</option>
+              <option value="">{rent}</option>
+              <option value="5000">Rs5000</option>
+              <option value="10000">Rs10000</option>
+              <option value="20000">Rs20000</option>
+              <option value="30000">Rs30000</option>
+              <option value="40000">Rs40000</option>
               <option value="50000+">Rs50000+</option>
             </select>
           </div>
@@ -67,7 +64,7 @@ function SearchFilter() {
 
           {/* SEARCH BUTTON */}
           <button
-            onClick={handleSearch}
+            onClick={() => handleSearch(city, rent)}
             className="mt-2 md:mt-0 md:ml-2 bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center gap-2 px-4 py-2 md:p-3 rounded-lg md:rounded-full transition"
           >
             <Search size={16} />
