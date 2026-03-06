@@ -11,6 +11,7 @@ import {
   updateAccountDetails,
   changePassword,
   updateProfilePicture,
+  refreshAccessToken,
 } from "../controllers/user.controller.js";
 
 export const userRouter = Router();
@@ -55,6 +56,9 @@ userRouter.route("/google/callback").get(
 
 userRouter.route("/logout").post(verifyJWT, logoutUser);
 userRouter.route("/me").get(verifyJWT, getCurrentUser);
+userRouter.route("/refresh-tokens").post(refreshAccessToken);
+
+////
 userRouter.route("/update-account").patch(verifyJWT, updateAccountDetails);
 userRouter.route("/change-password").patch(verifyJWT, changePassword);
 userRouter

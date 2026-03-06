@@ -7,7 +7,6 @@ import HotProperties from "./p-user/pages/tp/HotProperties.jsx";
 import Property from "./p-user/pages/tp/Property.jsx";
 import TenantProfile from "./p-user/pages/Tenant/TenantProfile.jsx";
 import FilterProperties from "./p-user/pages/tp/FilterProperties.jsx";
-import { AuthContextProvider } from "./context/AuthContext.jsx";
 import { UserContextProvider } from "./context/UserContext.jsx";
 import { AdminContextProvider } from "./context/AdminContext.jsx";
 import { LandlordContextProvider } from "./context/LandlordContext.jsx";
@@ -23,17 +22,15 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <AuthContextProvider>
-        <UserContextProvider>
-          <AdminContextProvider>
-            <LandlordContextProvider>
-              <PropertyContextProvider>
-                <App />
-              </PropertyContextProvider>
-            </LandlordContextProvider>
-          </AdminContextProvider>
-        </UserContextProvider>
-      </AuthContextProvider>
+      <UserContextProvider>
+        <AdminContextProvider>
+          <LandlordContextProvider>
+            <PropertyContextProvider>
+              <App />
+            </PropertyContextProvider>
+          </LandlordContextProvider>
+        </AdminContextProvider>
+      </UserContextProvider>
     ),
     children: [
       {

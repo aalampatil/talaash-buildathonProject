@@ -211,3 +211,50 @@ export const updateProfilePicture = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, user, "Profile updated successfully"));
 });
+
+export const refreshAccessToken = asyncHandler(async (req, res) => {
+  // console.log("user.js",req.cookies);
+
+  const incomingRefreshToken =
+    req.cookies.refreshToken || req.body.refreshToken;
+
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "unauthorised request");
+  }
+
+  try {
+    const decodedToken = jwt.verify(
+      incomingRefreshToken,
+      process.env.JWT_SECRET,
+    );
+
+    const user = await UserModel.findById(decodedToken?._id);
+    // console.log(user)
+
+    if (!user) {
+      throw new ApiError(401, "unauthorised request");
+    }
+
+    if (incomingRefreshToken !== user?.refreshToken) {
+      throw new ApiError(401, "token expired or used before");
+    }
+
+    if (user.refreshTokenExpiresAt.getTime() < Number(Date.now())) {
+      user.refreshToken = null;
+      user.refreshTokenExpiresAt = null;
+      await user.save();
+      throw new ApiError(401, "session expired login again");
+    } else {
+      const { accessToken, refreshToken: newRefreshToken } =
+        await generateAccessAndRefreshTokens(user._id);
+
+      return res
+        .status(200)
+        .cookie("accessToken", accessToken, accessCookieOptions)
+        .cookie("refreshToken", newRefreshToken, refreshCookieOptions)
+        .json(new ApiResponse(200, "", "access token refreshed"));
+    }
+  } catch (error) {
+    throw new ApiError(401, "invalid refresh Token/missing token");
+  }
+});

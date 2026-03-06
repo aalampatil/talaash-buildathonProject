@@ -122,7 +122,7 @@ export const getTenantVisits = asyncHandler(async (req, res) => {
 export const requestVisit = asyncHandler(async (req, res) => {
   const { propertyId, visitDate } = req.body;
 
-  const visit = await VisitRequest.create({
+  const visit = await VisitModel.create({
     tenant: req.user._id,
     property: propertyId,
     visitDate,
@@ -159,12 +159,12 @@ export const getRecommendedProperties = asyncHandler(async (req, res) => {
   }
 
   const { city } = tenant.preferences.location;
-  const { min, max } = tenant.preferences.budget;
+  const { rent } = tenant.preferences.budget;
 
   const properties = await PropertyModel.find({
     "location.city": city,
-    price: { $gte: min || 0, $lte: max || 100000000 },
-  }).limit(20);
+    price: { $lte: rent },
+  }).limit(5);
 
   return res
     .status(200)

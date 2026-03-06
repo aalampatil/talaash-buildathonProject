@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { axiosApi } from "../config/axiosApi";
+import { toast } from "react-toastify";
 
 const UserContext = createContext();
 
@@ -58,6 +59,7 @@ export const UserContextProvider = ({ children }) => {
       await axiosApi.post("/user/logout");
       setUser(null);
       setAuthStatus(false);
+      toast.success("logged out");
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +67,10 @@ export const UserContextProvider = ({ children }) => {
 
   const saveProp = async (id) => {
     try {
-      await axiosApi.post(`tenant/save-property/${id}`);
+      const response = await axiosApi.post(`tenant/save-property/${id}`);
+      if (response.data.success) {
+        toast.success(response.data.message);
+      }
     } catch (error) {
       console.log(error);
     }

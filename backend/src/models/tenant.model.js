@@ -41,6 +41,12 @@ const tenantSchema = new mongoose.Schema(
       default: "single",
     },
 
+    propertyType: {
+      type: String,
+      enum: ["1BHK", "2BHK", "3BHK", "room"],
+      default: "1BHK",
+    },
+
     preferences: {
       location: {
         city: {
@@ -53,8 +59,7 @@ const tenantSchema = new mongoose.Schema(
         },
       },
       budget: {
-        min: Number,
-        max: Number,
+        type: Number,
       },
     },
 

@@ -10,7 +10,12 @@ import { Link } from "react-router-dom";
 import { UseUserContext } from "../context/UserContext";
 
 export default function AppSidebar() {
-  const { logout } = UseUserContext();
+  const { logoutUser } = UseUserContext();
+
+  function handleClick() {
+    console.log("clicked");
+    logoutUser();
+  }
 
   return (
     <Sidebar>
@@ -28,7 +33,7 @@ export default function AppSidebar() {
                 <Link to="/my-visits">Visits</Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <button onClick={() => logout()}>Logout</button>
+                <button onClick={handleClick}>Logout</button>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <Link to="/dashboard/landlord"> Host A Property</Link>

@@ -17,7 +17,19 @@ landlordRouter.use(verifyJWT);
 
 landlordRouter.get("/profile", getLandlordProfile);
 
-landlordRouter.post("/property", upload.fields([]), createProperty);
+landlordRouter.post(
+  "/property",
+  upload.fields([
+    { name: "image1", maxCount: 1 },
+    { name: "image2", maxCount: 1 },
+    { name: "image3", maxCount: 1 },
+    { name: "image5", maxCount: 1 },
+    { name: "image6", maxCount: 1 },
+    { name: "image7", maxCount: 1 },
+    { name: "image8", maxCount: 1 },
+  ]),
+  createProperty,
+);
 
 landlordRouter.delete("/property/:propertyId", deleteProperty);
 
