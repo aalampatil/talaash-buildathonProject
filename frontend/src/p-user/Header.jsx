@@ -26,14 +26,14 @@ function Header() {
         </div>
 
         {/* Center Navigation */}
-        {currentPath === "/" ? (
+        {currentPath === "/filter-properties" ? (
           <div className="absolute left-1/2 -translate-x-1/2">
-            <Link className="flex items-center justify-center font-lg text-gray-700 hover:text-rose-500 cursor-Linkointer transition border border-red-200 rounded-full p-2 w-25 ">
-              Home
-            </Link>
+            <Search />
           </div>
         ) : (
-          <Search />
+          <Link className="flex items-center justify-center font-lg text-gray-700 hover:text-rose-500 cursor-pointer transition font-semibold p-2 max-w-50 ">
+            {currentPath === "/" ? "Home" : currentPath.slice(1).toUpperCase()}
+          </Link>
         )}
 
         {/* Mobile Menu */}

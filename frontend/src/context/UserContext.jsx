@@ -8,12 +8,13 @@ export const UserContextProvider = ({ children }) => {
   const [authStatus, setAuthStatus] = useState(false);
   const [loading, setLoading] = useState(true);
   const [tenantProfile, setTenantProfile] = useState({});
-  const [visits, setVisits] = useState({});
-  const [savedProperties, setSavedProperties] = useState({});
+  const [visits, setVisits] = useState([]);
+  const [savedProperties, setSavedProperties] = useState([]);
 
   const verified = async () => {
     try {
       const response = await axiosApi.get("/user/me");
+      // console.log(response.data);
       if (response.data.success) {
         setUser(response.data.data);
         setAuthStatus(true);
@@ -29,16 +30,24 @@ export const UserContextProvider = ({ children }) => {
 
   const fetchTenant = async () => {
     try {
-      //tenant doc also stores save save prop, so we can set saved prop from here
-      await axiosApi.get("/tenant/profile");
+      const response = await axiosApi.get("/tenant/profile");
+      // console.log(response.data);
+      if (response.data.success) {
+        setTenantProfile(response.data.data);
+        setSavedProperties(response.data.data.savedProperties);
+      }
     } catch (error) {
       console.log(error);
     }
   };
+
   const fetchVisits = async () => {
     try {
       const response = await axiosApi.get("/tenant/visits");
-      console.log(response);
+      // console.log(response.data);
+      if (response.data.success) {
+        setVisits(response.data.data);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -54,11 +63,42 @@ export const UserContextProvider = ({ children }) => {
     }
   };
 
+  const saveProp = async (id) => {
+    try {
+      await axiosApi.post(`tenant/save-property/${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removeProp = async (id) => {
+    try {
+      await axiosApi.post(`tenant/remove-property/${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const requestVisit = async (propertyId, visitDate) => {
+    try {
+      await axiosApi.post(`tenant/request-visit`, { propertyId, visitDate });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const cancelVisit = async (id) => {
+    try {
+      await axiosApi.post(`tenant/cancel-visit/${id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     verified();
+    fetchTenant();
     fetchVisits();
-  });
-
+  }, []);
   const value = {
     user,
     authStatus,
@@ -72,6 +112,10 @@ export const UserContextProvider = ({ children }) => {
     fetchTenant,
     fetchVisits,
     logoutUser,
+    saveProp,
+    removeProp,
+    requestVisit,
+    cancelVisit,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

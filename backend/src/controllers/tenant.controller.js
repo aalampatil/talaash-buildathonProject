@@ -1,5 +1,5 @@
 import { asyncHandler, ApiError, ApiResponse } from "../utils/utils.js";
-import { TenantModel, PropertyModel } from "../models/models.js";
+import { TenantModel, PropertyModel, VisitModel } from "../models/models.js";
 
 export const getTenantProfile = asyncHandler(async (req, res) => {
   const tenant = await TenantModel.findOne({ userId: req.user._id }).populate(

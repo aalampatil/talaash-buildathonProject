@@ -20,15 +20,7 @@ const tenantSchema = new mongoose.Schema(
         lowercase: true,
       },
 
-      mobile: {
-        type: String,
-        required: true,
-      },
-
       profilePicture: {
-        type: String,
-      },
-      profilePicture_publicId: {
         type: String,
       },
     },
@@ -37,6 +29,9 @@ const tenantSchema = new mongoose.Schema(
       verified: {
         type: Boolean,
         default: false,
+      },
+      verifiedAt: {
+        type: Date,
       },
     },
 

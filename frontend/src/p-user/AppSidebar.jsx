@@ -7,9 +7,11 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-// className="flex items-start border-2 border-red-300 rounded-md m-2 p-2 w-full hover:bg-neutral-300"
+import { UseUserContext } from "../context/UserContext";
 
 export default function AppSidebar() {
+  const { logout } = UseUserContext();
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -20,16 +22,16 @@ export default function AppSidebar() {
                 <Link to="/account">Account</Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <Link>Host Property</Link>
+                <Link to="/saved-properties">Saved Property</Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <Link>Saved Property</Link>
+                <Link to="/my-visits">Visits</Link>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <Link to="/visits">Visits</Link>
+                <button onClick={() => logout()}>Logout</button>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <Link>Logout</Link>
+                <Link to="/dashboard/landlord"> Host A Property</Link>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

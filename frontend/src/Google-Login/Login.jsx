@@ -1,65 +1,86 @@
-import { useForm } from "react-hook-form";
-import { axiosApi } from "../config/axiosApi";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { axiosApi } from "../config/axiosApi.js";
+import logo from "../assets/logo.png";
 
-function Login() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+const GoogleLogin = () => {
+  const location = useLocation();
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (data) => {
+  // Extract role from URL: "tenant" or "landlord"
+  const currentRole = location.pathname.split("/").pop();
+
+  const handleClick = () => {
+    setLoading(true);
+    googleAuth(currentRole); // send role to your context function
+  };
+
+  const googleAuth = async (role) => {
     try {
-      const res = await axiosApi.post("/user/login", data);
-
-      console.log(res.data);
-      alert("Login Successful");
+      window.open(
+        `${axiosApi.defaults.baseURL}/user/google/${currentRole}?state=${role}`,
+        "_self",
+      );
+      //_self allows to open the page in current tab
     } catch (error) {
-      console.error(error);
-      alert(error.response?.data?.message || "Login Failed");
+      console.error(error.message);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-sm border">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Login</h2>
+    <div
+      className="min-h-screen flex items-center justify-center relative px-4"
+      style={{
+        backgroundImage: `url(${logo})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Overlay for better contrast */}
+      <div className="absolute inset-0 bg-black/40"></div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* Email */}
-          <div>
-            <input
-              placeholder="Email"
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
-              {...register("email", { required: "Email is required" })}
-            />
-            <p className="text-sm text-red-500 mt-1">{errors.email?.message}</p>
-          </div>
+      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-10 text-center flex flex-col items-center">
+        {/* Logo */}
+        <div className="mb-6">
+          <img
+            src={logo}
+            alt="Talaash Logo"
+            className="w-20 h-20 object-contain rounded-full shadow-md"
+          />
+        </div>
 
-          {/* Password */}
-          <div>
-            <input
-              type="password"
-              placeholder="Password"
-              className="w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-400"
-              {...register("password", { required: "Password is required" })}
-            />
-            <p className="text-sm text-red-500 mt-1">
-              {errors.password?.message}
-            </p>
-          </div>
+        {/* Title */}
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+          Welcome to <span className="text-black">talaash</span>
+        </h1>
+        <p className="text-gray-600 mb-6">
+          You'll be signed up as <strong>{currentRole}</strong>
+        </p>
 
-          {/* Button */}
-          <button
-            type="submit"
-            className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition"
-          >
-            Login
-          </button>
-        </form>
+        {/* Google Button */}
+        <button
+          onClick={handleClick}
+          disabled={loading}
+          className={`w-full flex items-center justify-center gap-3 py-3 px-6 border border-gray-300 rounded-xl font-semibold text-gray-800 hover:shadow-lg hover:scale-105 transition-all duration-300 ${
+            loading ? "opacity-60 cursor-not-allowed" : ""
+          }`}
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google"
+            className="w-6 h-6"
+          />
+          {loading ? "Redirecting..." : "Continue with Google"}
+        </button>
+
+        {/* Footer */}
+        <p className="text-xs text-gray-400 mt-6">
+          By continuing, you agree to our{" "}
+          <span className="underline">Terms & Privacy Policy</span>
+        </p>
       </div>
     </div>
   );
-}
+};
 
-export default Login;
+export default GoogleLogin;

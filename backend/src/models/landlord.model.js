@@ -22,13 +22,9 @@ const landlordSchema = new mongoose.Schema(
 
       mobile: {
         type: String,
-        required: true,
       },
 
       profilePicture: {
-        type: String,
-      },
-      profilePicture_publicId: {
         type: String,
       },
     },
@@ -37,6 +33,9 @@ const landlordSchema = new mongoose.Schema(
       verified: {
         type: Boolean,
         default: false,
+      },
+      verifiedAt: {
+        type: Date,
       },
     },
 

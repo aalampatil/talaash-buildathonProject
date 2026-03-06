@@ -9,114 +9,114 @@ import { UserModel, TenantModel, LandlordModel } from "../models/models.js";
 import { accessCookieOptions, refreshCookieOptions } from "../config/token.js";
 import { generateAccessAndRefreshTokens } from "../config/token.js";
 
-export const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, mobile, role } = req.body;
-  if ([name, email, password, role].some((field) => field?.trim() === "")) {
-    throw new ApiError(400, "all fields are required");
-  }
+// export const registerUser = asyncHandler(async (req, res) => {
+//   const { name, email, password, mobile, role } = req.body;
+//   if ([name, email, password, role].some((field) => field?.trim() === "")) {
+//     throw new ApiError(400, "all fields are required");
+//   }
 
-  const existedUser = await UserModel.findOne({ email });
+//   const existedUser = await UserModel.findOne({ email });
 
-  if (existedUser) {
-    throw new ApiError(409, "User already exists");
-  }
+//   if (existedUser) {
+//     throw new ApiError(409, "User already exists");
+//   }
 
-  const profileLocalPath = req.file?.path;
+//   const profileLocalPath = req.file?.path;
 
-  if (!profileLocalPath) {
-    throw new ApiError(401, "profile pciture is required");
-  }
+//   if (!profileLocalPath) {
+//     throw new ApiError(401, "profile pciture is required");
+//   }
 
-  let profilePicture;
-  let profilePicture_publicId;
+//   let profilePicture;
+//   let profilePicture_publicId;
 
-  if (profileLocalPath) {
-    const upload = await uploadOnCloudinary(profileLocalPath);
-    profilePicture = upload?.secure_url;
-    profilePicture_publicId = upload?.public_id;
-  }
+//   if (profileLocalPath) {
+//     const upload = await uploadOnCloudinary(profileLocalPath);
+//     profilePicture = upload?.secure_url;
+//     profilePicture_publicId = upload?.public_id;
+//   }
 
-  const user = await UserModel.create({
-    name,
-    email,
-    password,
-    mobile,
-    role,
-    profilePicture,
-    profilePicture_publicId,
-  });
+//   const user = await UserModel.create({
+//     name,
+//     email,
+//     password,
+//     mobile,
+//     role,
+//     profilePicture,
+//     profilePicture_publicId,
+//   });
 
-  if (!user) {
-    throw new ApiError(500, "failed to creat user");
-  }
+//   if (!user) {
+//     throw new ApiError(500, "failed to creat user");
+//   }
 
-  if (user.role === "tenant") {
-    await TenantModel.create({
-      userId: user._id,
-      profile: {
-        name,
-        email,
-        mobile,
-        profilePicture,
-        profilePicture_publicId,
-      },
-    });
-  }
-  if (user.role === "landlord")
-    await LandlordModel.create({
-      userId: user._id,
-      profile: {
-        name,
-        email,
-        mobile,
-        profilePicture,
-        profilePicture_publicId,
-      },
-    });
+//   if (user.role === "tenant") {
+//     await TenantModel.create({
+//       userId: user._id,
+//       profile: {
+//         name,
+//         email,
+//         mobile,
+//         profilePicture,
+//         profilePicture_publicId,
+//       },
+//     });
+//   }
+//   if (user.role === "landlord")
+//     await LandlordModel.create({
+//       userId: user._id,
+//       profile: {
+//         name,
+//         email,
+//         mobile,
+//         profilePicture,
+//         profilePicture_publicId,
+//       },
+//     });
 
-  const createdUser = await UserModel.findById(user._id);
+//   const createdUser = await UserModel.findById(user._id);
 
-  return res
-    .status(200)
-    .json(new ApiResponse(200, createdUser, "User registered successfully"));
-});
+//   return res
+//     .status(200)
+//     .json(new ApiResponse(200, createdUser, "User registered successfully"));
+// });
 
-export const loginUser = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+// export const loginUser = asyncHandler(async (req, res) => {
+//   const { email, password } = req.body;
 
-  if (!email?.trim() || !password?.trim()) {
-    throw new ApiError(400, "Email and password are required");
-  }
+//   if (!email?.trim() || !password?.trim()) {
+//     throw new ApiError(400, "Email and password are required");
+//   }
 
-  const user = await UserModel.findOne({ email }).select("+password");
+//   const user = await UserModel.findOne({ email }).select("+password");
 
-  if (!user) {
-    throw new ApiError(404, "User not found");
-  }
+//   if (!user) {
+//     throw new ApiError(404, "User not found");
+//   }
 
-  const isPasswordValid = await user.isPasswordCorrect(password);
+//   const isPasswordValid = await user.isPasswordCorrect(password);
 
-  if (!isPasswordValid) {
-    throw new ApiError(401, "Invalid credentials");
-  }
+//   if (!isPasswordValid) {
+//     throw new ApiError(401, "Invalid credentials");
+//   }
 
-  const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
-    user._id,
-  );
+//   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+//     user._id,
+//   );
 
-  user.refreshToken = refreshToken;
-  await user.save({ validateBeforeSave: false });
+//   user.refreshToken = refreshToken;
+//   await user.save({ validateBeforeSave: false });
 
-  const loggedInUser = await UserModel.findById(user._id).select(
-    "-password -refreshToken",
-  );
+//   const loggedInUser = await UserModel.findById(user._id).select(
+//     "-password -refreshToken",
+//   );
 
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, accessCookieOptions)
-    .cookie("refreshToken", refreshToken, refreshCookieOptions)
-    .json(new ApiResponse(200, loggedInUser, "User logged in successfully"));
-});
+//   return res
+//     .status(200)
+//     .cookie("accessToken", accessToken, accessCookieOptions)
+//     .cookie("refreshToken", refreshToken, refreshCookieOptions)
+//     .json(new ApiResponse(200, loggedInUser, "User logged in successfully"));
+// });
 
 export const logoutUser = asyncHandler(async (req, res) => {
   await UserModel.findByIdAndUpdate(
@@ -133,9 +133,12 @@ export const logoutUser = asyncHandler(async (req, res) => {
 });
 
 export const getCurrentUser = asyncHandler(async (req, res) => {
-  const user = await UserModel.findById(req.user._id).select(
-    "-password -refreshToken",
-  );
+  const user = req.user;
+  // console.log("user",user);
+
+  if (!user) {
+    throw new ApiError(401, {}, "user is not verified");
+  }
 
   return res
     .status(200)

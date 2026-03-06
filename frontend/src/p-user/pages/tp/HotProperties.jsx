@@ -1,7 +1,7 @@
 import React from "react";
 
 function HotProperties() {
-  return <div>fetch properties with price more than 50k</div>;
+  return <div className="h-screen">Properties Around the Countries</div>;
 }
 
 export default HotProperties;

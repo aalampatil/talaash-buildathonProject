@@ -1,8 +1,10 @@
 import { Heart } from "lucide-react";
 import { UsePropertyContext } from "../context/PropertyContext";
+import { UseUserContext } from "../context/UserContext";
 
 function PropertyCard({ id, image, title, price }) {
   const { searchProperty } = UsePropertyContext();
+  const { saveProp } = UseUserContext();
 
   return (
     <div
@@ -17,7 +19,10 @@ function PropertyCard({ id, image, title, price }) {
         />
 
         {/* Heart */}
-        <button className="absolute top-2 right-2 bg-white/90 p-1.5 md:p-2 rounded-full hover:bg-white transition">
+        <button
+          onClick={saveProp}
+          className="absolute top-2 right-2 bg-white/90 p-1.5 md:p-2 rounded-full hover:bg-white transition"
+        >
           <Heart size={16} />
         </button>
       </div>

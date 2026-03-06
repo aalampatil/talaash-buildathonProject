@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const userSchema = new mongoose.Schema(
@@ -8,34 +7,50 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
     email: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
     },
-    password: {
+
+    googleId: {
       type: String,
-      required: true,
-      select: false,
+      unique: true,
     },
+
+    authProvider: {
+      type: String,
+      enum: ["google"],
+      default: "google",
+    },
+
+    profilePicture: {
+      type: String,
+    },
+
     mobile: {
       type: String,
     },
+
     role: {
       type: String,
       enum: ["tenant", "landlord", "admin"],
-      required: true,
       default: "tenant",
+      required: true,
     },
+
     verified: {
       type: Boolean,
-      default: false,
+      default: true, // Google emails are already verified
     },
+
     refreshToken: {
       type: String,
       select: false,
     },
+
     refreshTokenExpiresAt: {
       type: Date,
       select: false,
@@ -46,25 +61,19 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-userSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
-  this.password = await bcrypt.hash(this.password, 10);
-});
-
-userSchema.methods.isPasswordCorrect = async function (password) {
-  return await bcrypt.compare(password, this.password);
-};
-
+// Access Token
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
+      role: this.role,
     },
     process.env.JWT_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
   );
 };
 
+// Refresh Token
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {

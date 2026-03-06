@@ -10,10 +10,10 @@ export const PropertyContextProvider = ({ children }) => {
   const [property, setProperty] = useState({});
 
   //filter
-  const handleSearch = async (city, rent) => {
+  const handleSearch = async (city, rent, propertyType) => {
     try {
       const response = await axiosApi("/property/search", {
-        params: { city: city, rent: rent },
+        params: { city: city, rent: rent, propertyType: propertyType },
       });
       if (response.data.success) {
         setProperties(response.data.data);

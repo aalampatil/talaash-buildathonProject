@@ -22,7 +22,7 @@ function HeroSection() {
           {/* CTA */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <Link
-              to={"/properties"}
+              to={"/filter-properties"}
               className="bg-red-900 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium shadow-md transition"
             >
               Explore Homes

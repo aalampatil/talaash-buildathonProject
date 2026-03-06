@@ -5,6 +5,7 @@ import { UsePropertyContext } from "../context/PropertyContext";
 function SearchFilter() {
   const [city, setCity] = useState("Delhi");
   const [rent, setRent] = useState(5000);
+  const [propertyType, setPropertyType] = useState("1BHK");
   const { handleSearch } = UsePropertyContext();
 
   return (
@@ -55,16 +56,37 @@ function SearchFilter() {
               <option value="20000">Rs20000</option>
               <option value="30000">Rs30000</option>
               <option value="40000">Rs40000</option>
-              <option value="50000+">Rs50000+</option>
+              <option value="50000">Rs50000</option>
             </select>
           </div>
 
           {/* divider desktop */}
           <div className="hidden md:block h-6 w-px bg-gray-200"></div>
 
+          {/* Property Type */}
+          <div className="flex flex-col md:px-5 md:flex-1">
+            <span className="text-[11px] font-semibold text-gray-500">
+              Type
+            </span>
+            <select
+              value={propertyType}
+              onChange={(e) => setPropertyType(e.target.value)}
+              className="outline-none text-xs bg-transpapropertyType text-gray-700"
+            >
+              <option value="">{propertyType}</option>
+
+              <option value="1BhK">1BhK</option>
+              <option value="2BHK">2BHK</option>
+              <option value="3BHK">3BHK</option>
+              <option value="room">room</option>
+            </select>
+          </div>
+          {/* divider desktop */}
+          <div className="hidden md:block h-6 w-px bg-gray-200"></div>
+
           {/* SEARCH BUTTON */}
           <button
-            onClick={() => handleSearch(city, rent)}
+            onClick={() => handleSearch(city, rent, propertyType)}
             className="mt-2 md:mt-0 md:ml-2 bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center gap-2 px-4 py-2 md:p-3 rounded-lg md:rounded-full transition"
           >
             <Search size={16} />
