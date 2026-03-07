@@ -1,5 +1,6 @@
 import { asyncHandler, ApiError, ApiResponse } from "../utils/utils.js";
 import { LandlordModel, PropertyModel, VisitModel } from "../models/models.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/utils.js";
 
 export const getLandlordProfile = asyncHandler(async (req, res) => {
   const userId = req.user._id;
@@ -24,9 +25,27 @@ export const createProperty = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Landlord not found");
   }
 
+  // Handle images uploaded via middleware
+  const uploadedImages = [];
+  const uploadedPublicIds = [];
+
+  if (req.files && req.files.length > 0) {
+    for (const file of req.files) {
+      // Upload each file to Cloudinary
+      const result = await uploadOnCloudinary(file.path);
+      if (result) {
+        uploadedImages.push(result.secure_url);
+        uploadedPublicIds.push(result.public_id);
+      }
+    }
+  }
+
+  // Create property
   const property = await PropertyModel.create({
     ...req.body,
-    landlord: landlord._id,
+    landlordId: landlord._id,
+    images: uploadedImages,
+    images_publicId: uploadedPublicIds,
   });
 
   landlord.properties.push(property._id);

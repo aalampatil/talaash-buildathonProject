@@ -37,7 +37,7 @@ export default function AppSidebar({ role }) {
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <Link to="/landlord">Become a Host</Link>
+                    <Link to="/dashboard/landlord">Become a Host</Link>
                   </SidebarMenuItem>
                 </>
               )}

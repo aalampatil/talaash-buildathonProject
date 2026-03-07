@@ -19,21 +19,7 @@ landlordRouter.get("/profile", getLandlordProfile);
 landlordRouter.get("/property", getMyProperty);
 landlordRouter.get("/visits", getVisitRequest);
 
-landlordRouter.post(
-  "/property",
-  upload.fields([
-    { name: "image1", maxCount: 1 },
-    { name: "image2", maxCount: 1 },
-    { name: "image3", maxCount: 1 },
-    { name: "image5", maxCount: 1 },
-    { name: "image6", maxCount: 1 },
-    { name: "image7", maxCount: 1 },
-    { name: "image8", maxCount: 1 },
-    { name: "image9", maxCount: 1 },
-    { name: "image10", maxCount: 1 },
-  ]),
-  createProperty,
-);
+landlordRouter.post("/property", upload.array("images"), createProperty);
 
 landlordRouter.patch("/visit/approve/:visitId", approveVisit);
 landlordRouter.patch("/visit/reject/:visitId", rejectVisit);

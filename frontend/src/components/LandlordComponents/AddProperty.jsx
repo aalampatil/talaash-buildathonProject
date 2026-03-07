@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { UseLandlordContext } from "../../context/LandlordContext";
+import { toast } from "react-toastify";
 
 const amenitiesList = [
   "WiFi",
@@ -16,6 +18,8 @@ const amenitiesList = [
 const propertyTypes = ["1BHK", "2BHK", "3BHK", "room"];
 
 const AddProperty = () => {
+  const { createLandlordProperty } = UseLandlordContext();
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -76,9 +80,9 @@ const AddProperty = () => {
     images.forEach((img) => data.append("images", img));
 
     try {
-      const res = await fetch("/api/property/add");
-      const result = await res.json();
-      console.log(result);
+      console.log("inside handlesubmit");
+      const response = await createLandlordProperty(data);
+      console.log(response);
     } catch (err) {
       console.error(err);
     }

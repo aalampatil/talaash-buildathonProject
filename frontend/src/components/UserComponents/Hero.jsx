@@ -28,9 +28,11 @@ function HeroSection() {
               Explore Homes
             </Link>
 
-            <button className="border border-red-600 text-red-900 px-6 py-3 rounded-lg font-medium hover:bg-red-100 transition">
-              List Your Property
-            </button>
+            <Link to="/dashboard/landlord">
+              <button className="border border-red-600 text-red-900 px-6 py-3 rounded-lg font-medium hover:bg-red-100 transition">
+                List Your Property
+              </button>
+            </Link>
           </div>
         </div>
 
