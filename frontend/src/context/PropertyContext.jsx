@@ -44,7 +44,6 @@ export const PropertyContextProvider = ({ children }) => {
       if (response.data.success) {
         setProperty(response.data.data);
       }
-      navigate(`/property/${id}`);
     } catch (error) {
       console.log(error);
     }

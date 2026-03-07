@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UsePropertyContext } from "../../context/PropertyContext";
 import { UseUserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
+import { axiosApi } from "../../config/axiosApi";
 
 function Property() {
-  const { property } = UsePropertyContext();
+  // const { searchProperty } = UsePropertyContext();
+  const [property, setProperty] = useState({});
   const { requestVisit, saveProp } = UseUserContext();
 
   const [showVisitBox, setShowVisitBox] = useState(false);
@@ -17,6 +20,23 @@ function Property() {
       </div>
     );
   }
+
+  const searchProperty = async (id) => {
+    try {
+      const response = await axiosApi.get(`/property/${id}`);
+      console.log(response.data);
+      if (response.data.success) {
+        setProperty(response.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const { id } = useParams();
+  useEffect(() => {
+    searchProperty(id);
+  }, [id]);
 
   const handleVisitRequest = () => {
     if (!visitDate) {
