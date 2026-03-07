@@ -5,14 +5,16 @@ import Header from "./p-user/Header";
 import Footer from "./p-user/Footer";
 import { ToastContainer } from "react-toastify";
 import { Outlet } from "react-router";
+import { UseAuthContext } from "./context/AuthContext";
 
 function App() {
+  const { role } = UseAuthContext();
   return (
     <>
-      <div className="">
+      <div className="flex-1">
         <ToastContainer />
         <SidebarProvider defaultOpen={false}>
-          <AppSidebar />
+          <AppSidebar role={role} />
           <div className="flex flex-col w-full">
             <Header />
             {<Outlet />}

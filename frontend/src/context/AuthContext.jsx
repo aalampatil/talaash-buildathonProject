@@ -1,9 +1,20 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { UseUserContext } from "./UserContext";
 
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const value = {};
+  const { user } = UseUserContext();
+  const [role, setRole] = useState("Admin");
+
+  const initalizeRole = () => {
+    setRole(user.role);
+  };
+  useEffect(() => {
+    initalizeRole();
+    console.log(user.role);
+  });
+  const value = { role };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

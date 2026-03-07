@@ -9,11 +9,10 @@ import {
 import { Link } from "react-router-dom";
 import { UseUserContext } from "../context/UserContext";
 
-export default function AppSidebar() {
+export default function AppSidebar({ role }) {
   const { logoutUser } = UseUserContext();
 
   function handleClick() {
-    console.log("clicked");
     logoutUser();
   }
 
@@ -23,20 +22,62 @@ export default function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <Link to="/account">Account</Link>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <Link to="/saved-properties">Saved Property</Link>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <Link to="/my-visits">Visits</Link>
-              </SidebarMenuItem>
+              {role === "tenant" && (
+                <>
+                  <SidebarMenuItem>
+                    <Link to="/account">Account</Link>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <Link to="/saved-properties">Saved Property</Link>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <Link to="/my-visits">Visits</Link>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <Link to="/landlord/dashboard">Become a Host</Link>
+                  </SidebarMenuItem>
+                </>
+              )}
+
+              {role === "landlord" && (
+                <>
+                  <SidebarMenuItem>
+                    <Link to="/dashboard/landlord">Dashboard</Link>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <Link to="/dashboard/landlord/properties">
+                      My Properties
+                    </Link>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <Link to="/dashboard/landlord/bookings">Bookings</Link>
+                  </SidebarMenuItem>
+                </>
+              )}
+
+              {role === "admin" && (
+                <>
+                  <SidebarMenuItem>
+                    <Link to="/dashboard/admin">Admin Dashboard</Link>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <Link to="/dashboard/admin/users">Users</Link>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <Link to="/dashboard/admin/properties">All Properties</Link>
+                  </SidebarMenuItem>
+                </>
+              )}
+
               <SidebarMenuItem>
                 <button onClick={handleClick}>Logout</button>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <Link to="/dashboard/landlord"> Host A Property</Link>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

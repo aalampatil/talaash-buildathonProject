@@ -11,7 +11,7 @@ function ProtectedLandlord({ children, authentication }) {
       if (authentication && !authStatus) {
         navigate("/login/landlord");
       } else if (!authentication && authStatus) {
-        navigate("/dashboard/landlord");
+        navigate("/landlord");
       }
     }
   }, [authStatus, authentication, navigate, loading]);

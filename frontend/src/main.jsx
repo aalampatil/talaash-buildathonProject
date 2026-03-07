@@ -3,7 +3,6 @@ import "./index.css";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Homepage from "./p-user/pages/Homepage/Homepage.jsx";
-import HotProperties from "./p-user/pages/tp/HotProperties.jsx";
 import Property from "./p-user/pages/tp/Property.jsx";
 import TenantProfile from "./p-user/pages/Tenant/TenantProfile.jsx";
 import FilterProperties from "./p-user/pages/tp/FilterProperties.jsx";
@@ -17,36 +16,30 @@ import ProtectedLandlord from "./config/ProtectedLandlord.jsx";
 import ProtectedAdmin from "./config/ProtectedAdmin.jsx";
 import TenantVisits from "./p-user/pages/Tenant/TenantVisits.jsx";
 import SavedProperties from "./p-user/pages/Tenant/SavedProperties.jsx";
+import { AuthContextProvider } from "./context/AuthContext.jsx";
+import LandLordDB from "./p-landlord/pages/LandLordDB.jsx";
+import { LandlordLayout } from "./layouts/LandlordLayout.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <UserContextProvider>
-        <AdminContextProvider>
-          <LandlordContextProvider>
-            <PropertyContextProvider>
-              <App />
-            </PropertyContextProvider>
-          </LandlordContextProvider>
-        </AdminContextProvider>
-      </UserContextProvider>
+      <Providers>
+        <App />
+      </Providers>
     ),
     children: [
       {
         path: "",
+        index: true,
         element: <Homepage />,
       },
       {
-        path: `/property/:id`,
+        path: `property/:id`,
         element: <Property />,
       },
       {
-        path: "/hot-properties",
-        element: <HotProperties />,
-      },
-      {
-        path: "/filter-properties",
+        path: "filter-properties",
         element: (
           <ProtectedUser authentication>
             <FilterProperties />
@@ -54,7 +47,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/account",
+        path: "account",
         element: (
           <ProtectedUser authentication>
             <TenantProfile />
@@ -62,7 +55,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/my-visits",
+        path: "my-visits",
         element: (
           <ProtectedUser authentication>
             <TenantVisits />
@@ -70,7 +63,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/saved-properties",
+        path: "saved-properties",
         element: (
           <ProtectedUser authentication>
             <SavedProperties />
@@ -88,8 +81,21 @@ const router = createBrowserRouter([
     path: "/login/landlord",
     element: <Login />,
   },
-  {},
 ]);
+
+function Providers({ children }) {
+  return (
+    <UserContextProvider>
+      <AuthContextProvider>
+        <AdminContextProvider>
+          <LandlordContextProvider>
+            <PropertyContextProvider>{children}</PropertyContextProvider>
+          </LandlordContextProvider>
+        </AdminContextProvider>
+      </AuthContextProvider>
+    </UserContextProvider>
+  );
+}
 
 createRoot(document.getElementById("root")).render(
   <RouterProvider router={router} />,
