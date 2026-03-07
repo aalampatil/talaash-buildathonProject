@@ -1,81 +1,119 @@
-```
-export const registerUser = asyncHandler(async (req, res) => {
-  //get details from frontend
-  //name, email, pasasowrd, mobile, profile, role
-  // tenant or landlord
-  //validation check - "empty or not"
-  //check if already exist or not
-  //check for profile picture image
-  //upload on cloudinary
-  //handle file upload,
-  //create user object to create entry in db
-  /*if(role === "tenant"){
-   await TenantModel.create({ userId: user._id })
-   }
+# 🏠 Talaash – Smart Rental Property Platform
 
-    if(role === "landlord"){
-   await LandlordModel.create({ userId: user._id })
-   }
- */
-  //remove password and token from reponse
-  //check for user creation
-  //return response
+![Buildathon](https://img.shields.io/badge/Buildathon-Project-black)
+![React](https://img.shields.io/badge/Frontend-React-blue)
+![Node](https://img.shields.io/badge/Backend-Node.js-green)
+![MongoDB](https://img.shields.io/badge/Database-MongoDB-darkgreen)
 
-});
-```
+talaash-ap is a **full-stack rental property platform** designed to simplify the process of **finding, listing, and managing rental properties**.
+
+The platform connects **tenants, landlords, and administrators** through a modern and intuitive interface, the goal is to connect the users with the landlord, talaash is not accountable for any contract agreements.
+
+Built for a **Buildathon @chaicode by - HiteshChaudhary**, this project demonstrates real-world **full-stack architecture, authentication systems, and role-based access control.**
+
+---
+
+# 🚀 Features
+
+## 👤 Tenant
+
+- Create an account and login
+- Browse rental properties
+- View detailed property pages
+- Save favorite properties
+- Search by location
+- Responsive mobile-friendly UI
+- move-in flows (in upcoming update v1.1.0)
+- Tenant Verification (in upcoming update v1.1.0)
+
+---
+
+## 🏠 Landlord
+
+- Register as landlord
+- Add property listings
+- Update property details
+- Manage availability
+- Track listed properties
+- move-in flows (in upcoming update v1.1.0)
+- Tenant Verification (in upcoming update v1.1.0)
+
+---
+
+## 🛠 Admin
+
+- Admin dashboard
+- View all users
+- Manage landlords
+- Monitor properties
+- Platform moderation
+
+---
+
+# 🧠 System Architecture
+
+Frontend (React + Tailwind) → Backend (Node.js + Express) → Database
+(MongoDB)
+Cloudinary as a Cloud storage for images data
+
+### Frontend
+
+- React.js
+- React Router
+- Context API for state management
+- TailwindCSS for styling
+
+### Backend
+
+- Node.js
+- Express.js REST API
+- JWT Authentication + token rotation + session termination
+- MVC architecture
+
+### Database
+
+- MongoDB
+- Mongoose ODM
+
+---
+
+### to setup this project locally
 
 ```
-export const loginUser = asyncHandler(async (req, res) => {
-  //get email password from body
-  //verify and validate (empty or not or valid credentials)
-  //find if exist or not
-  //password check
-  //generate access and refresh token
-  //send cookies
-  //send response (exclude password and refresh token)
-});
+git clone url
+npm cd frontend && npm install
+npm cd backend && npm install
 ```
 
-```
-export const logoutUser = asyncHandler(async (req, res) => {
-  //create a authentication middleware.get token from cookies/header and verify it with the encypted token using secret,
-  //use the decoded token to find user,as token payload is ._id
-  //set user to req and call next();
-  //clear refreshToken and cookies
-});
+---
+
+### sample env var for backend
+
+```JS
+PORT=5000
+DB_URI=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+JWT_SECRET=
+ACCESS_TOKEN_EXPIRY=
+REFRESH_TOKEN_EXPIRY=
+REFRESH_TOKEN_EXPIRY_AT=
+CLIENT=
+SERVER=
 ```
 
-```
-export const getCurrentUser = asyncHandler(async (req, res) => {
-  //we have middleware
-  //middleware injects user into req
-  //return req.user
-});
+### sample env var for frontend
+
+```JS
+VITE_BACKEND_URL=
+VITE_SERVER=
 ```
 
-```
-export const updateAccountDetails = asyncHandler(async (req, res) => {
-  //email, number, phone
-  //validate
-  //fetch user and update
-  //return succcesss
-});
-```
+## Get your 3rd party credentials
 
-```
-export const changePassword = asyncHandler(async (req, res) => {
-  // get new, old password
-  // check is correct or not
-  // no need to hash, as we already hashing before save, using pre hook
-});
-```
+### Get your google oauth20 credential from google cloud consle and create you secret keys
 
-```
-export const updateProfile = asyncHandler(async (req, res) => {
-  // get local file path
-  // delete old one
-  // uplaod new one
-  // update in db
-  // return
-});
-```
+### For cloudinary cloud, register on cloudinary and create a environment and get your api keys
