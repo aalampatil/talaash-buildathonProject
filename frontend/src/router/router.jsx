@@ -1,9 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
-
 import { AdminLayout } from "../layouts/AdminLayout.jsx";
 import { LandlordLayout } from "../layouts/LandlordLayout.jsx";
 import { UserLayout } from "../layouts/UserLayout.jsx";
-
 import Homepage from "../pages/user/Homepage.jsx";
 import FilterProperties from "../pages/user/FilterProperties.jsx";
 import Property from "../pages/user/Property.jsx";
@@ -14,7 +12,6 @@ import { UserContextProvider } from "../context/UserContext.jsx";
 import { AdminContextProvider } from "../context/AdminContext.jsx";
 import { LandlordContextProvider } from "../context/LandlordContext.jsx";
 import { PropertyContextProvider } from "../context/PropertyContext.jsx";
-//import { AuthContextProvider } from "../context/AuthContext.jsx";
 import Login from "../Google-Login/Login.jsx";
 import ProtectedUser from "../config/ProtectedUser.jsx";
 import ProtectedLandlord from "../config/ProtectedLandlord.jsx";
@@ -104,7 +101,7 @@ export const router = createBrowserRouter([
 
   // admin routes
   {
-    path: "/admin",
+    path: "/dashboard/admin",
     element: (
       <Providers>
         <ProtectedAdmin>
