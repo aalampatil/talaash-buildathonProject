@@ -113,18 +113,9 @@ export const UserContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const init = async () => {
-      try {
-        await verified();
-        await fetchTenant();
-        await fetchVisits();
-      } catch (error) {
-        // user not logged in
-        console.log(error);
-      }
-    };
-
-    init();
+    verified();
+    fetchTenant();
+    fetchVisits();
   }, []);
 
   const value = {

@@ -5,6 +5,7 @@ import { UseUserContext } from "../context/UserContext";
 function ProtectedUser({ children, authentication }) {
   const { authStatus, loading } = UseUserContext();
   const navigate = useNavigate();
+  console.log({ authStatus });
 
   useEffect(() => {
     if (!loading) {
