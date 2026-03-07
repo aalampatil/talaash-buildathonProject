@@ -19,6 +19,11 @@ import ProtectedAdmin from "../config/ProtectedAdmin.jsx";
 import LandlordVisits from "../components/LandlordComponents/LandlordVisits.jsx";
 import AddProperty from "../components/LandlordComponents/AddProperty.jsx";
 import LandlordProperties from "../components/LandlordComponents/LandlordProperties.jsx";
+import Dashboard from "../pages/admin/Dashboard.jsx";
+import AllUsers from "../pages/admin/AllUsers.jsx";
+import AllProperties from "../pages/admin/AllProperties.jsx";
+import AllLandlord from "../pages/admin/AllLandlords.jsx";
+import AllLandlords from "../pages/admin/AllLandlords.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -109,7 +114,25 @@ export const router = createBrowserRouter([
         </ProtectedAdmin>
       </Providers>
     ),
-    children: [{}],
+    children: [
+      {
+        path: "",
+        index: true,
+        element: <Dashboard />,
+      },
+      {
+        path: "all-users",
+        element: <AllUsers />,
+      },
+      {
+        path: "all-landlords",
+        element: <AllLandlords />,
+      },
+      {
+        path: "all-properties",
+        element: <AllProperties />,
+      },
+    ],
   },
   {
     path: "/login/tenant",

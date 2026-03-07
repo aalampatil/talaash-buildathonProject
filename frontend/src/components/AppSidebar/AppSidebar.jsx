@@ -61,15 +61,19 @@ export default function AppSidebar({ role }) {
               {role === "admin" && (
                 <>
                   <SidebarMenuItem>
-                    <Link to="/dashboard/admin">Admin Dashboard</Link>
+                    <Link to="">Admin Dashboard</Link>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <Link to="/dashboard/admin/users">Users</Link>
+                    <Link to="all-users">All Users</Link>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <Link to="/dashboard/admin/properties">All Properties</Link>
+                    <Link to="all-landlords">All Landlords</Link>
+                  </SidebarMenuItem>
+
+                  <SidebarMenuItem>
+                    <Link to="all-properties">All Properties</Link>
                   </SidebarMenuItem>
                 </>
               )}
