@@ -1,5 +1,5 @@
 import React from "react";
-import { UseUserContext } from "../../../context/UserContext";
+import { UseUserContext } from "../../context/UserContext";
 
 function TenantVisits() {
   const { visits } = UseUserContext();

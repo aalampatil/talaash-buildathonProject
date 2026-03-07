@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { UsePropertyContext } from "../context/PropertyContext";
+import { UsePropertyContext } from "../../context/PropertyContext";
 
 function SearchFilter() {
   const [city, setCity] = useState("Delhi");

@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const { user } = UseUserContext();
-  const [role, setRole] = useState("Admin");
+  const [role, setRole] = useState("User");
 
   const initalizeRole = () => {
     setRole(user.role);

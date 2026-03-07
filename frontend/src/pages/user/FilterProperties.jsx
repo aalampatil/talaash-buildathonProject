@@ -1,6 +1,6 @@
 import React from "react";
-import PropertyCard from "../../PropertyCard";
-import { UsePropertyContext } from "../../../context/PropertyContext.jsx";
+import PropertyCard from "../../components/UserComponents/PropertyCard";
+import { UsePropertyContext } from "../../context/PropertyContext";
 
 function FilterProperties() {
   const { properties } = UsePropertyContext();

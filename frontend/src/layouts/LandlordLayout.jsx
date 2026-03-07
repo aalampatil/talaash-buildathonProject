@@ -1,22 +1,18 @@
 import { Outlet } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import AppSidebar from "../p-user/AppSidebar.jsx";
-// import Header from "../";
+import AppSidebar from "../components/AppSidebar/AppSidebar";
+import Header from "../components/Header/Header.jsx";
+import Footer from "../components/Footer/Footer.jsx";
 
-function LandlordLayout() {
+export function LandlordLayout() {
   return (
     <SidebarProvider defaultOpen={false}>
       <AppSidebar role="landlord" />
-
       <div className="flex flex-col w-full min-h-screen">
-        {/* <Header /> */}
-
-        <main className="flex-1">
-          <Outlet />
-        </main>
+        <Header />
+        <Outlet />
+        <Footer />
       </div>
     </SidebarProvider>
   );
 }
-
-export { LandlordLayout };

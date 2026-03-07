@@ -3,7 +3,12 @@ import { createContext, useContext } from "react";
 const LandlordContext = createContext();
 
 export const LandlordContextProvider = ({ children }) => {
-  return <LandlordContext.Provider>{children}</LandlordContext.Provider>;
+  const value = {};
+  return (
+    <LandlordContext.Provider value={value}>
+      {children}
+    </LandlordContext.Provider>
+  );
 };
 
 export const UseLandlordContext = () => {

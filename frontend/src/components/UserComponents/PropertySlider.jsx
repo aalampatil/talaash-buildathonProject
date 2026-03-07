@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { UsePropertyContext } from "../context/PropertyContext";
-import PropertyCard from "./PropertyCard";
+import { UsePropertyContext } from "../../context/PropertyContext";
+import PropertyCard from "../../components/UserComponents/PropertyCard";
 
 const PropertySlider = () => {
   const { allProperties } = UsePropertyContext();

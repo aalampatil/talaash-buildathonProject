@@ -1,4 +1,4 @@
-import { UsePropertyContext } from "../context/PropertyContext";
+import { UsePropertyContext } from "../../context/PropertyContext";
 
 function PropertyCard({ id, image, title, price }) {
   const { searchProperty } = UsePropertyContext();

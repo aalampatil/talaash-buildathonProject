@@ -1,7 +1,7 @@
 import { Menu } from "lucide-react";
-import logo from "../assets/logo-d.svg";
-import { SidebarTrigger } from "../components/ui/sidebar";
-import Search from "./Search";
+import logo from "../../assets/logo-d.svg";
+import { SidebarTrigger } from "../../components/ui/sidebar";
+import Search from "../UserComponents/Search";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
@@ -31,8 +31,13 @@ function Header() {
             <Search />
           </div>
         ) : (
-          <Link className="flex items-center justify-center font-lg text-gray-700 hover:text-rose-500 cursor-pointer transition font-semibold p-2 max-w-50 ">
-            {currentPath === "/" ? "Home" : currentPath.slice(1).toUpperCase()}
+          <Link className="flex items-center justify-center font-lg text-gray-700 hover:text-rose-500 cursor-pointer transition font-semibold p-2 max-w-100 ">
+            {currentPath === "/"
+              ? "Home"
+              : currentPath
+                  .split("/")
+                  .map((item) => item.toUpperCase())
+                  .join(" ")}
           </Link>
         )}
 

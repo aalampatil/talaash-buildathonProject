@@ -7,7 +7,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import { UseUserContext } from "../context/UserContext";
+import { UseUserContext } from "../../context/UserContext";
 
 export default function AppSidebar({ role }) {
   const { logoutUser } = UseUserContext();
@@ -37,7 +37,7 @@ export default function AppSidebar({ role }) {
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <Link to="/landlord/dashboard">Become a Host</Link>
+                    <Link to="/landlord">Become a Host</Link>
                   </SidebarMenuItem>
                 </>
               )}
@@ -45,17 +45,15 @@ export default function AppSidebar({ role }) {
               {role === "landlord" && (
                 <>
                   <SidebarMenuItem>
-                    <Link to="/dashboard/landlord">Dashboard</Link>
+                    <Link to="properties">Properties</Link>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <Link to="/dashboard/landlord/properties">
-                      My Properties
-                    </Link>
+                    <Link to="visits">Visits</Link>
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <Link to="/dashboard/landlord/bookings">Bookings</Link>
+                    <Link to="add-new-property">Add New Properties</Link>
                   </SidebarMenuItem>
                 </>
               )}

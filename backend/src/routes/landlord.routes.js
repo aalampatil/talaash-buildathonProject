@@ -16,6 +16,8 @@ export const landlordRouter = Router();
 landlordRouter.use(verifyJWT);
 
 landlordRouter.get("/profile", getLandlordProfile);
+landlordRouter.get("/property", getMyProperty);
+landlordRouter.get("/visits", getVisitRequest);
 
 landlordRouter.post(
   "/property",
@@ -27,16 +29,13 @@ landlordRouter.post(
     { name: "image6", maxCount: 1 },
     { name: "image7", maxCount: 1 },
     { name: "image8", maxCount: 1 },
+    { name: "image9", maxCount: 1 },
+    { name: "image10", maxCount: 1 },
   ]),
   createProperty,
 );
 
-landlordRouter.delete("/property/:propertyId", deleteProperty);
-
-landlordRouter.get("/property", getMyProperty);
-
-landlordRouter.get("/visits", getVisitRequest);
-
 landlordRouter.patch("/visit/approve/:visitId", approveVisit);
-
 landlordRouter.patch("/visit/reject/:visitId", rejectVisit);
+
+landlordRouter.delete("/property/:propertyId", deleteProperty);

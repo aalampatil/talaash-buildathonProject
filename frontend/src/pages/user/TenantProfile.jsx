@@ -1,6 +1,6 @@
 // TenantProfileEditable.jsx
 import React, { useState } from "react";
-import { UseUserContext } from "../../../context/UserContext";
+import { UseUserContext } from "../../context/UserContext";
 
 const TenantProfileEditable = () => {
   const { tenantProfile } = UseUserContext();

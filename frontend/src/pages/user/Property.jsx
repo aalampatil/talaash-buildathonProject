@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { UsePropertyContext } from "../../../context/PropertyContext";
-import { UseUserContext } from "../../../context/UserContext";
+import { UsePropertyContext } from "../../context/PropertyContext";
+import { UseUserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 
 function Property() {

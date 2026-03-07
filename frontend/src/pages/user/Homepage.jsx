@@ -1,6 +1,6 @@
 import React from "react";
-import PopularHomes from "../../PropertySlider";
-import HeroSection from "../../Hero";
+import PopularHomes from "../../components/UserComponents/PropertySlider";
+import HeroSection from "../../components/UserComponents/Hero";
 
 function Homepage() {
   return (

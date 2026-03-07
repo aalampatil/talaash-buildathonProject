@@ -1,102 +1,11 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Homepage from "./p-user/pages/Homepage/Homepage.jsx";
-import Property from "./p-user/pages/tp/Property.jsx";
-import TenantProfile from "./p-user/pages/Tenant/TenantProfile.jsx";
-import FilterProperties from "./p-user/pages/tp/FilterProperties.jsx";
-import { UserContextProvider } from "./context/UserContext.jsx";
-import { AdminContextProvider } from "./context/AdminContext.jsx";
-import { LandlordContextProvider } from "./context/LandlordContext.jsx";
-import { PropertyContextProvider } from "./context/PropertyContext.jsx";
-import Login from "./Google-Login/Login.jsx";
-import ProtectedUser from "./config/ProtectedUser.jsx";
-import ProtectedLandlord from "./config/ProtectedLandlord.jsx";
-import ProtectedAdmin from "./config/ProtectedAdmin.jsx";
-import TenantVisits from "./p-user/pages/Tenant/TenantVisits.jsx";
-import SavedProperties from "./p-user/pages/Tenant/SavedProperties.jsx";
-import { AuthContextProvider } from "./context/AuthContext.jsx";
-import LandLordDB from "./p-landlord/pages/LandLordDB.jsx";
-import { LandlordLayout } from "./layouts/LandlordLayout.jsx";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: (
-      <Providers>
-        <App />
-      </Providers>
-    ),
-    children: [
-      {
-        path: "",
-        index: true,
-        element: <Homepage />,
-      },
-      {
-        path: `property/:id`,
-        element: <Property />,
-      },
-      {
-        path: "filter-properties",
-        element: (
-          <ProtectedUser authentication>
-            <FilterProperties />
-          </ProtectedUser>
-        ),
-      },
-      {
-        path: "account",
-        element: (
-          <ProtectedUser authentication>
-            <TenantProfile />
-          </ProtectedUser>
-        ),
-      },
-      {
-        path: "my-visits",
-        element: (
-          <ProtectedUser authentication>
-            <TenantVisits />
-          </ProtectedUser>
-        ),
-      },
-      {
-        path: "saved-properties",
-        element: (
-          <ProtectedUser authentication>
-            <SavedProperties />
-          </ProtectedUser>
-        ),
-      },
-    ],
-  },
-
-  {
-    path: "/login/tenant",
-    element: <Login />,
-  },
-  {
-    path: "/login/landlord",
-    element: <Login />,
-  },
-]);
-
-function Providers({ children }) {
-  return (
-    <UserContextProvider>
-      <AuthContextProvider>
-        <AdminContextProvider>
-          <LandlordContextProvider>
-            <PropertyContextProvider>{children}</PropertyContextProvider>
-          </LandlordContextProvider>
-        </AdminContextProvider>
-      </AuthContextProvider>
-    </UserContextProvider>
-  );
-}
+import { RouterProvider } from "react-router-dom";
+import { router } from "../src/router/router.jsx";
+import { StrictMode } from "react";
 
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />,
+  <StrictMode>
+    <RouterProvider router={router} />
+  </StrictMode>,
 );
