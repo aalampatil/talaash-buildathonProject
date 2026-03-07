@@ -9,15 +9,15 @@ export const LandlordContextProvider = ({ children }) => {
   const [landlordProperties, setLandlordProperties] = useState([]);
   const [landlordProfile, setLandlordProfile] = useState({});
   const [manageVisits, setManageVisits] = useState([]);
+  // const [llProperty, setLlProperty] = useState({})
   const navigate = useNavigate();
 
   //fetch on first render
   const fetchLandlordProfile = async () => {
     try {
       const response = await axiosApi.get("/landlord/profile");
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.success) {
-        console.log(0);
         setLandlordProfile(response.data.data);
       }
     } catch (error) {
@@ -29,9 +29,8 @@ export const LandlordContextProvider = ({ children }) => {
   const fetchLandlordProperties = async () => {
     try {
       const response = await axiosApi.get("/landlord/property");
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.success) {
-        console.log(1);
         setLandlordProperties(response.data.data);
       }
     } catch (error) {
@@ -43,9 +42,8 @@ export const LandlordContextProvider = ({ children }) => {
   const fetchVisits = async () => {
     try {
       const response = await axiosApi.get("/landlord/visits");
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.success) {
-        console.log(2);
         setManageVisits(response.data.data);
       }
     } catch (error) {
@@ -59,7 +57,8 @@ export const LandlordContextProvider = ({ children }) => {
       // console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
-        navigate("dashboard/landlord/properties");
+        await fetchLandlordProperties(); // refresh list
+        navigate("/dashboard/landlord/properties");
       }
     } catch (error) {
       console.log(error);
@@ -69,9 +68,13 @@ export const LandlordContextProvider = ({ children }) => {
   const deleteLandlordProperty = async (id) => {
     try {
       const response = await axiosApi.delete(`/landlord/property/${id}`);
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
+        await fetchLandlordProperties();
+        setLandlordProperties((prev) =>
+          prev.filter((property) => property._id !== id),
+        );
       }
     } catch (error) {
       console.log(error);
@@ -82,9 +85,10 @@ export const LandlordContextProvider = ({ children }) => {
   const approveVisit = async (id) => {
     try {
       const response = await axiosApi.patch(`/landlord/visit/approve/${id}`);
-      console.log(response.data);
+      // console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
+        await fetchVisits();
       }
     } catch (error) {
       console.log(error);
@@ -98,6 +102,7 @@ export const LandlordContextProvider = ({ children }) => {
       console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
+        await fetchVisits();
       }
     } catch (error) {
       console.log(error);
@@ -105,17 +110,16 @@ export const LandlordContextProvider = ({ children }) => {
     }
   };
 
+  //   const extractIndividualProperty = (id) => {
+  //   const property = landlordProperties.find((item) => item._id === id)
+  //   setLlProperty(property)
+  // }
+
   useEffect(() => {
     fetchLandlordProfile();
     fetchLandlordProperties();
     fetchVisits();
   }, []);
-
-  // useEffect(() => {
-  //   landlordProfile;
-  //   landlordProperties;
-  //   manageVisits;
-  // }, []);
 
   const value = {
     approveVisit,

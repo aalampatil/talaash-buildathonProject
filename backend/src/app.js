@@ -27,6 +27,7 @@ import {
   tenantRouter,
   landlordRouter,
   propertyRouter,
+  adminRouter,
 } from "./routes/routes.js";
 
 //routes
@@ -34,6 +35,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/tenant", tenantRouter);
 app.use("/api/v1/landlord", landlordRouter);
 app.use("/api/v1/property", propertyRouter);
+app.use("/api/v1/admin", adminRouter);
 
 app.get("/", (req, res) => {
   res.send("Ok 200");

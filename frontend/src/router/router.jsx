@@ -16,9 +16,9 @@ import Login from "../Google-Login/Login.jsx";
 import ProtectedUser from "../config/ProtectedUser.jsx";
 import ProtectedLandlord from "../config/ProtectedLandlord.jsx";
 import ProtectedAdmin from "../config/ProtectedAdmin.jsx";
-import LandlordPorperties from "../components/LandlordComponents/LandlordPorperties.jsx";
 import LandlordVisits from "../components/LandlordComponents/LandlordVisits.jsx";
 import AddProperty from "../components/LandlordComponents/AddProperty.jsx";
+import LandlordProperties from "../components/LandlordComponents/LandlordProperties.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -82,11 +82,11 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <LandlordPorperties />,
+        element: <LandlordProperties />,
       },
       {
         path: "properties",
-        element: <LandlordPorperties />,
+        element: <LandlordProperties />,
       },
       {
         path: "visits",

@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { axiosApi } from "../config/axiosApi";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const PropertyContext = createContext();
 
