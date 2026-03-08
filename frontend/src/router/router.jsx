@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, redirect } from "react-router-dom";
 import { AdminLayout } from "../layouts/AdminLayout.jsx";
 import { LandlordLayout } from "../layouts/LandlordLayout.jsx";
 import { UserLayout } from "../layouts/UserLayout.jsx";
@@ -142,6 +142,10 @@ export const router = createBrowserRouter([
     path: "/login/landlord",
     element: <Login />,
   },
+  {
+  path: "/login",
+  loader: () => redirect("/login/tenant")
+}
 ]);
 
 function Providers({ children }) {
