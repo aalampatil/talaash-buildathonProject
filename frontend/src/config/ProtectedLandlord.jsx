@@ -30,7 +30,7 @@ function ProtectedLandlord({ children, authentication }) {
     );
   }
 
-  return children;
+  return { children };
 }
 
 export default ProtectedLandlord;

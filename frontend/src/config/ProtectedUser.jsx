@@ -31,7 +31,7 @@ function ProtectedUser({ children, authentication }) {
     );
   }
 
-  return children;
+  return { children };
 }
 
 export default ProtectedUser;
