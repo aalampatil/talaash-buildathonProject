@@ -155,38 +155,43 @@ function Property() {
 
         {/* VISIT BOX */}
         {showVisitBox && (
-          <div className="mt-4 bg-white shadow-md rounded-lg p-6 space-y-4 w-full max-w-md border">
-            <h3 className="text-lg font-semibold text-gray-800">
+          <div className="mt-4 w-full max-w-xl mx-auto bg-white border rounded-xl shadow-sm p-5 sm:p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
               Schedule a Visit
             </h3>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-gray-600 text-sm">Property ID</label>
-              <input
-                type="text"
-                value={property._id}
-                readOnly
-                className="border border-gray-300 rounded p-2 text-gray-700 bg-gray-50"
-              />
-            </div>
+            <div className="flex flex-col gap-4">
+              {/* Property ID */}
+              <div className="flex flex-col gap-1">
+                <label className="text-gray-600 text-sm">Property ID</label>
+                <input
+                  type="text"
+                  value={property._id}
+                  readOnly
+                  className="border border-gray-300 rounded-md p-2 text-gray-700 bg-gray-50 text-sm"
+                />
+              </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-gray-600 text-sm">Choose Date</label>
-              <input
-                type="date"
-                value={visitDate}
-                onChange={(e) => setVisitDate(e.target.value)}
-                className="border border-gray-300 rounded p-2 text-gray-700"
-              />
-            </div>
+              {/* Visit Date */}
+              <div className="flex flex-col gap-1">
+                <label className="text-gray-600 text-sm">Choose Date</label>
+                <input
+                  type="date"
+                  value={visitDate}
+                  onChange={(e) => setVisitDate(e.target.value)}
+                  className="border border-gray-300 rounded-md p-2 text-gray-700 text-sm"
+                />
+              </div>
 
-            <button
-              disabled={!visitDate}
-              onClick={handleVisitRequest}
-              className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 disabled:bg-gray-400 transition"
-            >
-              Send Visit Request
-            </button>
+              {/* Button */}
+              <button
+                disabled={!visitDate}
+                onClick={handleVisitRequest}
+                className="w-full bg-black text-white py-2.5 rounded-md hover:bg-gray-800 disabled:bg-gray-400 transition"
+              >
+                Send Visit Request
+              </button>
+            </div>
           </div>
         )}
       </div>

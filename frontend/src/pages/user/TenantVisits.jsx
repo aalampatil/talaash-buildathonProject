@@ -4,20 +4,34 @@ import { UseUserContext } from "../../context/UserContext";
 function TenantVisits() {
   const { visits } = UseUserContext();
 
-  if (!visits || visits.length === 0) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        No visits scheduled
-      </div>
-    );
-  }
+  const dummyVisit = {
+    _id: "dummy",
+    propertyId: {
+      title: "Sample Apartment",
+      location: {
+        city: "Your City",
+        area: "Sample Area",
+      },
+      rent: "XXXX",
+    },
+    visitDate: new Date(),
+    status: "Example",
+  };
+
+  const visitList = visits && visits.length > 0 ? visits : [dummyVisit];
 
   return (
     <div className="min-h-screen p-6 space-y-4">
-      {visits.map((visit) => (
+      {visits?.length === 0 && (
+        <p className="text-center text-gray-500 text-sm mb-4">
+          No visits scheduled yet. This is how your visit will appear.
+        </p>
+      )}
+
+      {visitList.map((visit) => (
         <div
           key={visit._id}
-          className="w-full h-[100px] border border-black flex items-center justify-between px-6"
+          className="w-full min-h-[100px] border border-black flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-6 py-4"
         >
           {/* Property Info */}
           <div>
