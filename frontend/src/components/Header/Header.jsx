@@ -1,57 +1,88 @@
-import { Menu } from "lucide-react";
+import { Menu, Search as SearchIcon } from "lucide-react";
 import logo from "../../assets/logo-d.svg";
 import { SidebarTrigger } from "../../components/ui/sidebar";
 import Search from "../UserComponents/Search";
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function Header() {
   const location = useLocation();
   const currentPath = location.pathname;
 
+  const [showSearch, setShowSearch] = useState(false);
+
+  // close mobile search when route changes
+  useEffect(() => {
+    setShowSearch(false);
+  }, [currentPath]);
+
+  const formatPath = () => {
+    if (currentPath === "/") return "Home";
+
+    return currentPath
+      .split("/")
+      .filter(Boolean)
+      .map((item) => item.replace("-", " ").toUpperCase())
+      .join(" / ");
+  };
+
   return (
-    <header className="w-full max-h-30 border-b bg-white flex flex-col">
+    <header className="w-full border-b bg-white flex flex-col">
+      {/* Top Navigation */}
       <div className="relative flex items-center justify-between px-4 py-3">
         {/* Logo */}
-        <div className="text-xl font-semibold text-rose-500 tracking-wide">
-          <Link to={"/"}>
-            <img
-              src={logo}
-              height="50px"
-              className="max-w-25"
-              width="70px"
-              alt="logo"
-            />
-          </Link>
-        </div>
+        <Link to="/" className="flex items-center">
+          <img src={logo} className="w-[70px] sm:w-[80px]" alt="Talaash logo" />
+        </Link>
 
-        {/* Center Navigation */}
-        {currentPath === "/filter-properties" ? (
-          <div className="absolute left-1/2 -translate-x-1/2">
+        {/* Desktop Search */}
+        {currentPath === "/filter-properties" && (
+          <div className="absolute left-1/2 -translate-x-1/2 w-[60%] hidden sm:flex justify-center">
             <Search />
           </div>
-        ) : (
-          <Link className="flex items-center justify-center font-lg text-gray-700 hover:text-rose-500 cursor-pointer transition font-semibold p-2 max-w-100 ">
-            {currentPath === "/"
-              ? "Home"
-              : currentPath
-                  .split("/")
-                  .map((item) => item.toUpperCase())
-                  .join(" ")}
-          </Link>
         )}
 
-        {/* Mobile Menu */}
-        <SidebarTrigger className="p-2 rounded-lg hover:bg-gray-100 transition">
-          <Menu size={26} />
-        </SidebarTrigger>
+        {/* Breadcrumb */}
+        {currentPath !== "/filter-properties" && (
+          <div className="absolute left-1/2 -translate-x-1/2 sm:static sm:translate-x-0">
+            <Link
+              to={currentPath}
+              className="text-xs sm:text-sm font-semibold text-gray-700 hover:text-rose-500 transition truncate max-w-[140px] sm:max-w-none block text-center"
+            >
+              {formatPath()}
+            </Link>
+          </div>
+        )}
+
+        {/* Right Actions */}
+        <div className="flex items-center gap-2">
+          {/* Mobile Search Button */}
+          <button
+            onClick={() => setShowSearch(!showSearch)}
+            className="sm:hidden p-2 rounded-lg hover:bg-gray-100 transition"
+          >
+            <SearchIcon size={22} />
+          </button>
+
+          {/* Sidebar Menu */}
+          <SidebarTrigger className="p-2 rounded-lg hover:bg-gray-100 transition">
+            <Menu size={26} />
+          </SidebarTrigger>
+        </div>
       </div>
-      {currentPath === "/" ? (
-        <div>
+
+      {/* Homepage Search */}
+      {currentPath === "/" && (
+        <div className="px-4 pb-4 sm:px-10">
           <Search />
         </div>
-      ) : (
-        ""
+      )}
+
+      {/* Mobile Search */}
+      {showSearch && currentPath === "/filter-properties" && (
+        <div className="px-4 pb-4 sm:hidden">
+          <Search />
+        </div>
       )}
     </header>
   );
