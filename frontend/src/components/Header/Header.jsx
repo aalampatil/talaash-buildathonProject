@@ -10,7 +10,7 @@ function Header() {
   const currentPath = location.pathname;
 
   return (
-    <header className="w-full border-b bg-white flex flex-col">
+    <header className="w-full max-h-30 border-b bg-white flex flex-col">
       <div className="relative flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <div className="text-xl font-semibold text-rose-500 tracking-wide">

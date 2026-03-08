@@ -1,8 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function HeroSection() {
   const [showDisclaimer, setShowDisclaimer] = useState(true);
+
+  useEffect(() => {
+    const show = localStorage.getItem("showDisclaimer");
+
+    if (!show) {
+      setShowDisclaimer(true);
+    }
+  }, []);
+
+  const handleClose = () => {
+    localStorage.setItem("showDisclaimer", "true");
+    setShowDisclaimer(false);
+  };
 
   return (
     <section className="w-full min-h-[90vh] px-3 py-3 flex items-center">
@@ -29,7 +42,7 @@ function HeroSection() {
             {/* Footer */}
             <div className="flex justify-end mt-6">
               <button
-                onClick={() => setShowDisclaimer(false)}
+                onClick={handleClose}
                 className="border border-black px-5 py-2 text-sm hover:bg-black hover:text-white transition rounded-md"
               >
                 Close
