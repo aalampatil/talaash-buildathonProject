@@ -76,7 +76,9 @@ export const UserContextProvider = ({ children }) => {
       if (response.data.success) {
         toast.success(response.data.message);
 
-        setSavedProperties((prev) => [...prev, id]);
+        setSavedProperties((prev) =>
+          prev.includes(id) ? prev : [...prev, id],
+        );
       }
     } catch (error) {
       console.log(error);
@@ -117,6 +119,10 @@ export const UserContextProvider = ({ children }) => {
     fetchTenant();
     fetchVisits();
   }, []);
+
+  useEffect(() => {
+    fetchTenant();
+  }, [saveProp]);
 
   const value = {
     user,
