@@ -1,12 +1,13 @@
+import { Link } from "react-router";
 import { UsePropertyContext } from "../../context/PropertyContext";
 
 function PropertyCard({ id, image, title, price }) {
-  const { searchProperty } = UsePropertyContext();
+  // const { searchProperty } = UsePropertyContext();
 
   return (
-    <div
+    <Link
+      to={`/property/${id}`}
       className="w-full md:min-w-[48%] cursor-pointer"
-      onClick={() => searchProperty(id)}
     >
       <div className="relative">
         <img
@@ -20,7 +21,7 @@ function PropertyCard({ id, image, title, price }) {
         <p className="font-semibold">{title}</p>
         <p className="text-gray-500">Starting from just {price}</p>
       </div>
-    </div>
+    </Link>
   );
 }
 

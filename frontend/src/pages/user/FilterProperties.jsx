@@ -28,7 +28,7 @@ function FilterProperties() {
                   : "https://placehold.co/600x400"
               }
               title={`${property.propertyType} in ${property.location.city}`}
-              price={`₹${property.rent}`}
+              price={`Rs ${property.rent}`}
             />
           ))}
         </div>

@@ -40,7 +40,7 @@ const PropertySlider = () => {
             id={property._id}
             image={property.images?.[0]}
             title={property.title}
-            price={`₹${property.rent.toLocaleString()} / month`}
+            price={`Rs ${property.rent.toLocaleString()} / month`}
           />
         ))}
       </div>

@@ -28,7 +28,7 @@ function TenantVisits() {
               {visit.propertyId?.location?.area}
             </p>
 
-            <p className="text-sm">₹{visit.propertyId?.rent}</p>
+            <p className="text-sm">Rs {visit.propertyId?.rent}</p>
           </div>
 
           {/* Visit Date */}
