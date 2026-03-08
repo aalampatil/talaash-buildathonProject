@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function HeroSection() {
-  const [showDisclaimer, setShowDisclaimer] = useState(null);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
 
   useEffect(() => {
     const show = localStorage.getItem("showDisclaimer");
@@ -13,7 +13,7 @@ function HeroSection() {
   }, []);
 
   const handleClose = () => {
-    localStorage.setItem("showDisclaimer", "true");
+    localStorage.setItem("showDisclaimer", true);
     setShowDisclaimer(false);
   };
 
