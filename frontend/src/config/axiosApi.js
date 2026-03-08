@@ -1,4 +1,5 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 const backendUrl =
   import.meta.env.MODE === "production"
@@ -10,40 +11,60 @@ export const axiosApi = axios.create({
   withCredentials: true,
 });
 
+// Axios response interceptor
 axiosApi.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Don't retry the refresh request itself
+    // Prevent retrying the refresh token request itself
     if (originalRequest.url.includes("/refresh-tokens")) {
       return Promise.reject(error);
     }
 
-    // If access token expired
+    // Only once
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
+        // Call refresh token endpoint
         const refreshResponse = await axios.post(
           `${backendUrl}/user/refresh-tokens`,
           {},
-          { withCredentials: true },
+          { withCredentials: true }, // send refreshToken cookie
         );
 
         if (refreshResponse.data.success) {
-          const newAccessToken = refreshResponse.data.accessToken;
+          // Update the original request with the new access token from cookie
+          const newAccessToken = Cookies.get("accessToken");
+          if (newAccessToken) {
+            originalRequest.headers["Authorization"] =
+              `Bearer ${newAccessToken}`;
+          }
 
-          // Update the Authorization header of original request
-          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-
-          return axiosApi(originalRequest); // retry original request
+          // Retry the original request
+          return axiosApi(originalRequest);
         }
       } catch (refreshError) {
-        console.log("Refresh failed", refreshError);
+        console.error("Refresh token failed:", refreshError);
+        // Optional: redirect to login page
+        if (import.meta.env.MODE === "production") {
+          window.location.href = import.meta.env.VITE_CLIENT + "/login";
+        } else {
+          window.location.href = "http://localhost:5173/login";
+        }
       }
     }
 
     return Promise.reject(error);
   },
 );
+
+// Optional: inject Authorization header for all requests automatically
+axiosApi.interceptors.request.use((config) => {
+  const token = Cookies.get("accessToken");
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+  return config;
+});
