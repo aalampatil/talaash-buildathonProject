@@ -25,7 +25,7 @@ export const accessCookieOptions = {
   secure: isProduction ? true : false, // true in production
   sameSite: isProduction ? "none" : "lax",
   maxAge: 24 * 60 * 60 * 1000, // 1d
-  path: "/",
+  // path: "/",
 };
 
 export const refreshCookieOptions = {
@@ -33,5 +33,5 @@ export const refreshCookieOptions = {
   secure: isProduction ? true : false,
   sameSite: isProduction ? "none" : "lax",
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7d
-  path: "/",
+  // path: "/",
 };

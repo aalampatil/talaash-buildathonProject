@@ -213,10 +213,10 @@ export const updateProfilePicture = asyncHandler(async (req, res) => {
 });
 
 export const refreshAccessToken = asyncHandler(async (req, res) => {
-  // console.log("user.js",req.cookies);
+  console.log("user.js", req.cookies);
 
   const incomingRefreshToken =
-    req.cookies.refreshToken || req.body.refreshToken;
+    req?.cookies.refreshToken || req.body.refreshToken;
 
   if (!incomingRefreshToken) {
     throw new ApiError(401, "unauthorised request");

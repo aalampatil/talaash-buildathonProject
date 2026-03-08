@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { UserModel } from "../models/user.model.js";
 
 export const verifyJWT = async (req, _, next) => {
-  //console.log(req.cookies);
+  console.log(req.cookies);
 
   try {
     const token =

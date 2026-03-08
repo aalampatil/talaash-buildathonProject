@@ -15,6 +15,11 @@ axiosApi.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Don't retry the refresh request itself
+    if (originalRequest.url.includes("/refresh-tokens")) {
+      return Promise.reject(error);
+    }
+
     // If access token expired
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -27,6 +32,11 @@ axiosApi.interceptors.response.use(
         );
 
         if (refreshResponse.data.success) {
+          const newAccessToken = refreshResponse.data.accessToken;
+
+          // Update the Authorization header of original request
+          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+
           return axiosApi(originalRequest); // retry original request
         }
       } catch (refreshError) {
