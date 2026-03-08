@@ -8,6 +8,7 @@ const GoogleLogin = () => {
   const [loading, setLoading] = useState(false);
 
   // Extract role from URL: "tenant" or "landlord"
+  console.log(location);
   const currentRole = location.pathname.split("/").pop();
 
   const handleClick = () => {

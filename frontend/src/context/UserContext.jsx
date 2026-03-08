@@ -15,17 +15,17 @@ export const UserContextProvider = ({ children }) => {
   const verified = async () => {
     try {
       const response = await axiosApi.get("/user/me");
-      // console.log(response.data);
+      console.log(response.data);
       if (response.data.success) {
         setUser(response.data.data);
         setAuthStatus(true);
       }
     } catch (error) {
       setUser(null);
-      setAuthStatus(false);
-      setTenantProfile({});
-      setVisits([]);
-      setSavedProperties([]);
+      setAuthStatus((prev) => !prev);
+      // setTenantProfile({});
+      // setVisits([]);
+      // setSavedProperties([]);
       throw error;
     } finally {
       setLoading(false);
@@ -51,7 +51,7 @@ export const UserContextProvider = ({ children }) => {
       // console.log(response.data);
       if (response.data.success) {
         setVisits(response.data.data);
-        await fetchVisits();
+        // await fetchVisits();
       }
     } catch (error) {
       console.log(error);
@@ -98,7 +98,7 @@ export const UserContextProvider = ({ children }) => {
   const requestVisit = async (propertyId, visitDate) => {
     try {
       await axiosApi.post(`tenant/request-visit`, { propertyId, visitDate });
-      await fetchVisits();
+      // await fetchVisits();
     } catch (error) {
       console.log(error);
     }

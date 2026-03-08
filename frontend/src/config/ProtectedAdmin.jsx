@@ -30,7 +30,7 @@ function ProtectedAdmin({ children, authentication }) {
     );
   }
 
-  return { children };
+  return children;
 }
 
 export default ProtectedAdmin;

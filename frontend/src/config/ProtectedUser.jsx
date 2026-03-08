@@ -5,7 +5,7 @@ import { UseUserContext } from "../context/UserContext";
 function ProtectedUser({ children, authentication }) {
   const { authStatus, loading } = UseUserContext();
   const navigate = useNavigate();
-  console.log({ authStatus });
+  console.log(authStatus, loading);
 
   useEffect(() => {
     if (!loading) {
@@ -31,7 +31,7 @@ function ProtectedUser({ children, authentication }) {
     );
   }
 
-  return { children };
+  return children;
 }
 
 export default ProtectedUser;
