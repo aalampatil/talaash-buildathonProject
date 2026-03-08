@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function HeroSection() {
-  const [showDisclaimer, setShowDisclaimer] = useState(true);
+  const [showDisclaimer, setShowDisclaimer] = useState(null);
 
   useEffect(() => {
     const show = localStorage.getItem("showDisclaimer");
