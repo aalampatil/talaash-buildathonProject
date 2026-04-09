@@ -14,7 +14,7 @@ async function main() {
   const app = createApp();
   app.listen(PORT, () => {
     console.log(
-      `deadlink-ap server listening on :${PORT} in ${process.env.NODE_ENV} mode`,
+      `deadlink-ap server listening on ${PORT} in ${process.env.NODE_ENV} mode`,
     );
   });
 }
