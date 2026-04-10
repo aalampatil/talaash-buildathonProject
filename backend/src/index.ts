@@ -1,6 +1,6 @@
-import dotenv from "dotenv";
-dotenv.config({ path: "./.env" });
-import createApp from "./app.js";
+import "dotenv/config";
+import { env } from "./env.js";
+import { createServerApplication } from "./app/index.js";
 import { connectDB } from "./common/db/db.js";
 export const isProduction = process.env.NODE_ENV === "production";
 const PORT = process.env.PORT || "5000";
@@ -10,11 +10,18 @@ if (!isProduction) {
 }
 
 async function main() {
-  await connectDB();
-  const app = createApp();
-  app.listen(PORT, () => {
-    console.log(`server listening on ${PORT} in ${process.env.NODE_ENV} mode`);
-  });
+  try {
+    await connectDB();
+    const app = createServerApplication();
+    const PORT: number = env.PORT ? +env.PORT : 8080;
+    app.listen(PORT, () => {
+      console.log(
+        `server listening on ${PORT} in ${process.env.NODE_ENV} mode`,
+      );
+    });
+  } catch (error) {
+    throw Error;
+  }
 }
 
 main().catch((err) => {

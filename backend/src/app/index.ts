@@ -2,9 +2,10 @@ import express from "express";
 import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
 import type { Response } from "express";
-import tenantRouter from "./module/tenant/tenant.routes.js";
+import { userRouter } from "./user/user.routes.js";
+import { tenantRouter } from "./tenant/tenant.routes.js";
 
-function createApp() {
+export const createServerApplication = () => {
   const app = express();
 
   app.use(
@@ -27,9 +28,7 @@ function createApp() {
     res.send("OK 200, check");
   });
 
+  app.use("/api/user", userRouter);
   app.use("/api/tenant", tenantRouter);
-
   return app;
-}
-
-export default createApp;
+};

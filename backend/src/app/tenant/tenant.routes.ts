@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { TenantController } from "./tenant.controller.js";
+import { requireAuth } from "@clerk/express";
 
-const tenantRouter = Router();
+export const tenantRouter = Router();
 
 const controller = new TenantController();
 
@@ -9,5 +10,3 @@ tenantRouter.post(
   "/register",
   controller.handleTenantRegister.bind(controller),
 );
-
-export default tenantRouter;

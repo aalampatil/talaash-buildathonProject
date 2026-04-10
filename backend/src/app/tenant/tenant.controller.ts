@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import TenantModel from "./tenant.model.js";
+import { Tenant } from "./tenant.model.js";
 
 export class TenantController {
   public async handleTenantRegister(req: Request, res: Response) {
