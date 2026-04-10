@@ -11,7 +11,6 @@ const tenantSchema = new Schema(
     householdType: {
       type: String,
       enum: ["family", "single", "room"],
-      required: true,
     },
     propertyType: {
       type: String,

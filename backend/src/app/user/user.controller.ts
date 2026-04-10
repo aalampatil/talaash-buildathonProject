@@ -1,6 +1,8 @@
 import { User } from "./user.model.js";
 import type { Request, Response } from "express";
 import { userValidationSchema } from "../../validations/user.schema.js";
+import { Tenant } from "../tenant/tenant.model.js";
+import { Landlord } from "../landord/landlord.model.js";
 
 export class UserController {
   public async handleUserRegister(req: Request, res: Response) {
@@ -14,7 +16,18 @@ export class UserController {
         ...validatedResult.data,
       });
 
-      return res.json({
+      if (user.role === "tenant") {
+        await Tenant.create({
+          userId: user._id,
+        });
+      }
+
+      if (user.role === "landlord") {
+        await Landlord.create({
+          userId: user._id,
+        });
+      }
+      return res.status(201).json({
         success: validatedResult.success,
         user: user,
         error: validatedResult.error?.issues,
