@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import { clerkMiddleware } from "@clerk/express";
 import type { Response } from "express";
-import { userRouter } from "./user/user.routes.js";
-import { tenantRouter } from "./tenant/tenant.routes.js";
+import { userRouter } from "./modules/user/user.routes.js";
+import { tenantRouter } from "./modules/tenant/tenant.routes.js";
 
 export const createServerApplication = () => {
   const app = express();

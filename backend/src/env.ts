@@ -10,6 +10,7 @@ const envSchema = z.object({
   SERVER: z.string(),
   CLERK_PUBLISHABLE_KEY: z.string(),
   CLERK_SECRET_KEY: z.string(),
+  ADMIN_EMAIL: z.string(),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

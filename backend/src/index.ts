@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { env } from "./env.js";
-import { createServerApplication } from "./app/index.js";
+import { createServerApplication } from "./app.js";
 import { connectDB } from "./common/db/db.js";
 export const isProduction = process.env.NODE_ENV === "production";
 const PORT = process.env.PORT || "5000";
