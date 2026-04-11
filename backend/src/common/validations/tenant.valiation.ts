@@ -4,6 +4,7 @@ const objectId = z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId");
 
 export const tenantValidationSchema = z.object({
   userId: objectId,
+  clerkId: z.string(),
 
   householdType: z.enum(["family", "single", "room"]).optional(),
 
@@ -19,7 +20,7 @@ export const tenantValidationSchema = z.object({
 
   savedProperties: z.array(objectId).optional(),
 
-  shortlistedProperties: z.array(objectId).optional(),
+  shortListedProperties: z.array(objectId).optional(),
 });
 
 export type tenant = z.infer<typeof tenantValidationSchema>;

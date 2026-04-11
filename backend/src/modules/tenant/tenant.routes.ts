@@ -6,7 +6,7 @@ export const tenantRouter = Router();
 
 const controller = new TenantController();
 
-tenantRouter.post(
-  "/register",
-  controller.handleTenantRegister.bind(controller),
+tenantRouter.get(
+  "/getTenant",
+  controller.handleGetTenantProfile.bind(controller),
 );

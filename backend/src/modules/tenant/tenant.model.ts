@@ -1,4 +1,5 @@
 import mongoose, { Schema, type InferSchemaType } from "mongoose";
+import { required } from "zod/mini";
 
 const tenantSchema = new Schema(
   {
@@ -7,6 +8,11 @@ const tenantSchema = new Schema(
       ref: "User",
       required: true,
       unique: true, // one tenant per user
+    },
+    clerkId: {
+      type: String,
+      required: true,
+      unique: true,
     },
     householdType: {
       type: String,
@@ -27,7 +33,7 @@ const tenantSchema = new Schema(
         ref: "Property",
       },
     ],
-    shortlistedProperties: [
+    shortListedProperties: [
       {
         type: Schema.Types.ObjectId,
         ref: "Property",
@@ -42,4 +48,5 @@ export type TenantDocument = InferSchemaType<typeof tenantSchema> & {
 };
 
 export const Tenant =
-  mongoose.models.Tenant || mongoose.model("Tenant", tenantSchema);
+  (mongoose.models.Tenant as mongoose.Model<TenantDocument>) ||
+  mongoose.model<TenantDocument>("Tenant", tenantSchema);

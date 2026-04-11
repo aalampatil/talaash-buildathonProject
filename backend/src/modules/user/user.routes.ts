@@ -6,3 +6,4 @@ export const userRouter = Router();
 const controller = new UserController();
 
 userRouter.post("/register", controller.handleUserRegister.bind(controller));
+userRouter.get("/getUser", controller.handleGetUser.bind(controller));

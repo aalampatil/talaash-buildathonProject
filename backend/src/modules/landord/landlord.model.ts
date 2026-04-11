@@ -8,6 +8,11 @@ const landlordSchema = new Schema(
       required: true,
       unique: true,
     },
+    clerkId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     properties: [
       {
         type: Schema.Types.ObjectId,
@@ -23,4 +28,5 @@ export type LandlordDocument = InferSchemaType<typeof landlordSchema> & {
 };
 
 export const Landlord =
-  mongoose.models.Landlord || mongoose.model("Landlord", landlordSchema);
+  mongoose.models.Landlord ||
+  mongoose.model<LandlordDocument>("Landlord", landlordSchema);

@@ -16,4 +16,4 @@ export const userValidationSchema = z
   })
   .strict();
 
-export type user = z.infer<typeof userValidationSchema>;
+export type UserDTO = z.infer<typeof userValidationSchema>;
