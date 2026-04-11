@@ -1,6 +1,6 @@
 import { User } from "./user.model.js";
 import type { Request, Response } from "express";
-import { userValidationSchema } from "../../common/validations/user.schema.js";
+import { userValidationSchema } from "../../common/validations/user.validation.js";
 import { Tenant } from "../tenant/tenant.model.js";
 import { Landlord } from "../landord/landlord.model.js";
 
