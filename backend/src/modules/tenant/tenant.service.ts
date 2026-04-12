@@ -1,20 +1,37 @@
 import ApiError from "../../common/utils/api-error.js";
 import { Tenant, type TenantDocument } from "./tenant.model.js";
 
-const ServiceHandleGetTenantProfile = async (clerkId: string) => {
-  const tenant = await Tenant.findOne({ clerkId }).populate("userId");
-  console.log("T", tenant);
+// ── Shared helper ─────────────────────────────────────────────────────────────
+
+const getVerifiedTenant = async (clerkId: string) => {
+  const tenant = await Tenant.findOne({ clerkId });
   if (!tenant) throw ApiError.notfound("Tenant not found");
   return tenant;
 };
+
+// ── Profile ───────────────────────────────────────────────────────────────────
+
+const ServiceHandleGetTenantProfile = async (clerkId: string) => {
+  const tenant = await Tenant.findOne({ clerkId }).populate("userId");
+  if (!tenant) throw ApiError.notfound("Tenant not found");
+
+  return {
+    id: tenant._id,
+    preferences: tenant.preferences,
+    savedProperties: tenant.savedProperties,
+    shortListedProperties: tenant.shortListedProperties,
+  };
+};
+
+// ── Preferences ───────────────────────────────────────────────────────────────
 
 const ServiceHandleUpdateTenantPreferences = async (
   data: Partial<TenantDocument>,
 ) => {
   const { clerkId, preferences } = data;
-  if (!clerkId) throw ApiError.notfound("clerkId is required");
-  const tenant = await Tenant.findOne({ clerkId });
-  if (!tenant) throw ApiError.notfound("user not found");
+  if (!clerkId) throw ApiError.badRequest("clerkId is required");
+
+  const tenant = await getVerifiedTenant(clerkId);
 
   if (preferences) {
     tenant.preferences = {
@@ -27,7 +44,7 @@ const ServiceHandleUpdateTenantPreferences = async (
   return { message: "preference updated" };
 };
 
-//#region
+// ── Saved Properties ──────────────────────────────────────────────────────────
 
 const ServiceHandleSaveProperty = async ({
   clerkId,
@@ -41,9 +58,7 @@ const ServiceHandleSaveProperty = async ({
     { $addToSet: { savedProperties: propertyId } },
   );
 
-  if (result.matchedCount === 0) {
-    throw ApiError.notfound("user not found");
-  }
+  if (result.matchedCount === 0) throw ApiError.notfound("User not found");
 
   return { message: "property saved" };
 };
@@ -60,17 +75,14 @@ const ServiceHandleRemoveSavedProperty = async ({
     { $pull: { savedProperties: propertyId } },
   );
 
-  // Optional: check if anything was actually removed
-  if (result.modifiedCount === 0) {
-    throw ApiError.notfound("property not found in saved list");
-  }
+  if (result.matchedCount === 0) throw ApiError.notfound("User not found");
+  if (result.modifiedCount === 0)
+    throw ApiError.notfound("Property not found in saved list");
 
   return { message: "property removed from saved" };
 };
 
-//#endregion
-
-//#region
+// ── Shortlisted Properties ────────────────────────────────────────────────────
 
 const ServiceHandleAddToShortListed = async ({
   clerkId,
@@ -84,9 +96,7 @@ const ServiceHandleAddToShortListed = async ({
     { $addToSet: { shortListedProperties: propertyId } },
   );
 
-  if (result.matchedCount === 0) {
-    throw ApiError.notfound("user not found");
-  }
+  if (result.matchedCount === 0) throw ApiError.notfound("User not found");
 
   return { message: "property added to shortlisted" };
 };
@@ -103,18 +113,14 @@ const ServiceHandleRemoveFromShortListed = async ({
     { $pull: { shortListedProperties: propertyId } },
   );
 
-  if (result.matchedCount === 0) {
-    throw ApiError.notfound("user not found");
-  }
-
-  if (result.modifiedCount === 0) {
-    throw ApiError.notfound("property not in shortlisted");
-  }
+  if (result.matchedCount === 0) throw ApiError.notfound("User not found");
+  if (result.modifiedCount === 0)
+    throw ApiError.notfound("Property not in shortlisted");
 
   return { message: "property removed from shortlisted" };
 };
 
-//#endregion
+// ── Stubs ─────────────────────────────────────────────────────────────────────
 
 const ServiceHandleRequestVisit = async () => {};
 const ServiceHandleCancelVisit = async () => {};

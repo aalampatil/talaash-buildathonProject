@@ -34,6 +34,7 @@ class ApiError extends Error {
   static notfound(message: string = "not found"): ApiError {
     return new ApiError(412, message);
   }
+  static notImplemented = (msg = "Not implemented") => new ApiError(501, msg);
 }
 
 export default ApiError;
