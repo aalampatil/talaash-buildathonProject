@@ -8,16 +8,17 @@ const ServiceHandleGetTenantProfile = async (clerkId: string) => {
   return tenant;
 };
 
-const ServiceHandleUpdateTenantPreferences = async ({
-  ...data
-}: TenantDocument) => {
+const ServiceHandleUpdateTenantPreferences = async (
+  data: Partial<TenantDocument>,
+) => {
   const { clerkId, preferences } = data;
+  if (!clerkId) throw ApiError.notfound("clerkId is required");
   const tenant = await Tenant.findOne({ clerkId });
   if (!tenant) throw ApiError.notfound("user not found");
 
   if (preferences) {
     tenant.preferences = {
-      ...tenant.preferences,
+      ...(tenant.preferences || {}),
       ...preferences,
     };
   }

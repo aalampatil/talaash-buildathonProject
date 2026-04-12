@@ -13,18 +13,26 @@ import ApiError from "../../common/utils/api-error.js";
 
 export class TenantController {
   public async handleGetTenantProfile(req: Request, res: Response) {
-    const { clerkId } = req.body;
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised();
+
     const response = await ServiceHandleGetTenantProfile(clerkId);
     return ApiResponse.ok(res, "profile fetched successfully", response);
   }
 
   public async handleUpdateTenantPreferences(req: Request, res: Response) {
-    const response = await ServiceHandleUpdateTenantPreferences(req.body);
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised();
+    const response = await ServiceHandleUpdateTenantPreferences({
+      clerkId,
+      preferences: req.body.preferences,
+    });
     return ApiResponse.ok(res, response.message, null);
   }
 
   public async handleSaveProperty(req: Request, res: Response) {
-    const { clerkId } = req.body;
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised();
     const { propertyId } = req.params;
     if (!propertyId || Array.isArray(propertyId)) {
       return ApiError.badRequest("Invalid propertyId");
@@ -34,7 +42,8 @@ export class TenantController {
   }
 
   public async handleRemoveSavedProperty(req: Request, res: Response) {
-    const { clerkId } = req.body;
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised();
     const { propertyId } = req.params;
     if (!propertyId || Array.isArray(propertyId)) {
       return ApiError.badRequest("Invalid propertyId");
@@ -47,7 +56,8 @@ export class TenantController {
   }
 
   public async handleAddToShortListed(req: Request, res: Response) {
-    const { clerkId } = req.body;
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised();
     const { propertyId } = req.params;
     if (!propertyId || Array.isArray(propertyId)) {
       return ApiError.badRequest("Invalid propertyId");
@@ -60,7 +70,8 @@ export class TenantController {
   }
 
   public async handleRemoveFromShortListed(req: Request, res: Response) {
-    const { clerkId } = req.body;
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised();
     const { propertyId } = req.params;
     if (!propertyId || Array.isArray(propertyId)) {
       return ApiError.badRequest("Invalid propertyId");

@@ -7,6 +7,7 @@ import {
 import { Tenant } from "../tenant/tenant.model.js";
 import { Landlord } from "../landord/landlord.model.js";
 import ApiError from "../../common/utils/api-error.js";
+import { getAuth } from "@clerk/express";
 
 export class UserController {
   public async handleUserRegister(req: Request, res: Response) {
@@ -39,10 +40,9 @@ export class UserController {
   }
 
   public async handleGetUser(req: Request, res: Response) {
-    const clerkId = req.body;
-    console.log(clerkId);
+    const { userId: clerkId } = getAuth(req);
     if (!clerkId) throw ApiError.badRequest();
-    const user = await User.findOne(clerkId);
+    const user = await User.findOne({ clerkId });
     console.log(user);
     if (!user) throw ApiError.notfound;
     return res.status(201).json({ user });
