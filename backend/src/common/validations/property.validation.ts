@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const objectId = z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId");
 
-export const createPropertySchema = z
+export const propertyValidationSchema = z
   .object({
     landlordId: objectId,
 
@@ -37,3 +37,5 @@ export const createPropertySchema = z
     rating: z.number().min(1).max(5).optional(),
   })
   .strict();
+
+export type PropertyDTO = z.infer<typeof propertyValidationSchema>;

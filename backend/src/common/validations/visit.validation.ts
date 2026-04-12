@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const objectId = z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId");
 
-export const createVisitSchema = z
+export const visitValidatonSchema = z
   .object({
     tenantId: objectId,
     propertyId: objectId,
@@ -17,3 +17,5 @@ export const createVisitSchema = z
       .default("pending"),
   })
   .strict();
+
+export type VisitDTO = z.infer<typeof visitValidatonSchema>;

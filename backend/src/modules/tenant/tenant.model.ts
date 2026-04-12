@@ -14,18 +14,21 @@ const tenantSchema = new Schema(
       required: true,
       unique: true,
     },
-    householdType: {
-      type: String,
-      enum: ["family", "single", "room"],
-    },
-    propertyType: {
-      type: String,
-      enum: ["1BHK", "2BHK", "3BHK"],
-    },
     preferences: {
-      location: String,
-      city: String,
-      budget: Number,
+      householdType: {
+        type: String,
+        enum: ["family", "single", "room"],
+        default: "single",
+      },
+      propertyType: {
+        type: String,
+        enum: ["1BHK", "2BHK", "3BHK"],
+        default: "1BHK",
+      },
+      location: { type: String, default: "mars" },
+      city: { type: String, default: "mars" },
+      minBudget: { type: Number, default: 1000 },
+      maxBudget: { type: Number, default: 100000 },
     },
     savedProperties: [
       {

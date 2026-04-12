@@ -11,4 +11,4 @@ export const landlordValidationSchema = z
   })
   .strict();
 
-export type landlord = z.infer<typeof landlordValidationSchema>;
+export type LandlordDTO = z.infer<typeof landlordValidationSchema>;
