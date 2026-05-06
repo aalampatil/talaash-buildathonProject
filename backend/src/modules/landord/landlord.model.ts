@@ -28,5 +28,5 @@ export type LandlordDocument = InferSchemaType<typeof landlordSchema> & {
 };
 
 export const Landlord =
-  mongoose.models.Landlord ||
+  (mongoose.models.Landlord as mongoose.Model<LandlordDocument>) ||
   mongoose.model<LandlordDocument>("Landlord", landlordSchema);
