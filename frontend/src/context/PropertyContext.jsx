@@ -13,12 +13,11 @@ export const PropertyContextProvider = ({ children }) => {
   const fetchAllProperties = async () => {
     try {
       const response = await axiosApi.get("/property/");
-      // console.log(response.data.data);
       if (response.data.success) {
         setAllProperties(response.data.data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -33,19 +32,18 @@ export const PropertyContextProvider = ({ children }) => {
       }
       navigate("/filter-properties");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   //inividual property
   const searchProperty = async (id) => {
     try {
       const response = await axiosApi.get(`/property/${id}`);
-      // console.log(response.data);
       if (response.data.success) {
         setProperty(response.data.data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

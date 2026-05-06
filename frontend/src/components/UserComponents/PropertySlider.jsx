@@ -6,16 +6,10 @@ const PropertySlider = () => {
   const { allProperties } = UsePropertyContext();
   const [randomProps, setRandomProps] = useState([]);
 
-  const handleRandom = () => {
+  useEffect(() => {
     if (allProperties?.length) {
       const shuffled = [...allProperties].sort(() => 0.5 - Math.random());
       setRandomProps(shuffled.slice(0, 6));
-    }
-  };
-
-  useEffect(() => {
-    if (allProperties?.length > 0) {
-      handleRandom();
     }
   }, [allProperties]);
 

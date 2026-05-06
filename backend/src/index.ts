@@ -2,12 +2,6 @@ import "dotenv/config";
 import { env } from "./env.js";
 import { createServerApplication } from "./app.js";
 import { connectDB } from "./common/db/db.js";
-export const isProduction = process.env.NODE_ENV === "production";
-const PORT = process.env.PORT || "5000";
-
-if (!isProduction) {
-  console.log("check 00");
-}
 
 async function main() {
   try {
@@ -15,12 +9,10 @@ async function main() {
     const app = createServerApplication();
     const PORT: number = env.PORT ? +env.PORT : 8080;
     app.listen(PORT, () => {
-      console.log(
-        `server listening on ${PORT} in ${process.env.NODE_ENV} mode`,
-      );
+      console.log(`server listening on ${PORT}`);
     });
   } catch (error) {
-    throw Error;
+    throw error;
   }
 }
 

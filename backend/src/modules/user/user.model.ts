@@ -23,7 +23,7 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ["tenant", "landlord"],
+      enum: ["tenant", "landlord", "admin"],
       required: true,
     },
     verified: {

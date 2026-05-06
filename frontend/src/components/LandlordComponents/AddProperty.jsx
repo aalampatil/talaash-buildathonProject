@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { UseLandlordContext } from "../../context/LandlordContext";
-import { toast } from "react-toastify";
 
 const amenitiesList = [
   "WiFi",
@@ -80,9 +79,7 @@ const AddProperty = () => {
     images.forEach((img) => data.append("images", img));
 
     try {
-      console.log("inside handlesubmit");
-      const response = await createLandlordProperty(data);
-      console.log(response);
+      await createLandlordProperty(data);
     } catch (err) {
       console.error(err);
     }

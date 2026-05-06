@@ -1,6 +1,7 @@
 import React from "react";
 import { UseLandlordContext } from "../../context/LandlordContext";
 import { Link } from "react-router-dom";
+import { getPropertyImageUrl } from "../../lib/propertyImage";
 
 function LandlordProperties() {
   const { landlordProperties } = UseLandlordContext();
@@ -28,7 +29,7 @@ function LandlordProperties() {
             {/* Property Image */}
             {property.images && property.images[0] && (
               <img
-                src={property.images[0]}
+                src={getPropertyImageUrl(property.images[0])}
                 alt={property.title}
                 className="h-44 w-full object-cover"
               />

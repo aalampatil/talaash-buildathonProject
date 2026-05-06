@@ -7,9 +7,11 @@ import {
   ServiceHandleRemoveFromShortListed,
   ServiceHandleRemoveSavedProperty,
   ServiceHandleSaveProperty,
+  ServiceHandleUpdateTenantProfile,
   ServiceHandleUpdateTenantPreferences,
   ServiceHandleRequestVisit,
   ServiceHandleCancelVisit,
+  ServiceHandleGetTenantVisits,
   ServiceHandleGetRecommendedProperties,
 } from "./tenant.service.js";
 import ApiError from "../../common/utils/api-error.js";
@@ -34,9 +36,25 @@ export class TenantController {
 
       const response = await ServiceHandleUpdateTenantPreferences({
         clerkId,
-        preferences: req.body.preferences,
+        preferences: req.body.preferences ?? req.body,
       });
       return ApiResponse.ok(res, response.message, null);
+    },
+  );
+
+  public handleUpdateTenantProfile = wrapAsync(
+    async (req: Request, res: Response) => {
+      const { userId: clerkId } = getAuth(req);
+      if (!clerkId) throw ApiError.unauthorised();
+
+      const response = await ServiceHandleUpdateTenantProfile({
+        clerkId,
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone ?? req.body.mobile,
+      });
+
+      return ApiResponse.ok(res, "Profile updated successfully", response);
     },
   );
 
@@ -92,17 +110,57 @@ export class TenantController {
   );
 
   public handleRequestVisit = wrapAsync(async (req: Request, res: Response) => {
-    throw ApiError.notImplemented("handleRequestVisit is not yet implemented");
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised("Authentication required");
+
+    const { propertyId, visitDate, message } = req.body;
+
+    if (!propertyId || !visitDate) {
+      throw ApiError.badRequest("propertyId and visitDate are required");
+    }
+
+    const visit = await ServiceHandleRequestVisit({
+      clerkId,
+      propertyId,
+      visitDate,
+      message,
+    });
+
+    return ApiResponse.created(res, "Visit requested successfully", visit);
   });
 
   public handleCancelVisit = wrapAsync(async (req: Request, res: Response) => {
-    throw ApiError.notImplemented("handleCancelVisit is not yet implemented");
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised("Authentication required");
+
+    const visitId = requireParam(req.params.visitId, "visitId");
+
+    const result = await ServiceHandleCancelVisit({
+      visitId,
+      clerkId,
+    });
+
+    return ApiResponse.ok(res, result.message, { visitId: result.visitId });
+  });
+
+  public handleGetTenantVisits = wrapAsync(async (req: Request, res: Response) => {
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised();
+
+    const response = await ServiceHandleGetTenantVisits(clerkId);
+    return ApiResponse.ok(res, "visits fetched successfully", response);
   });
 
   public handleGetRecommendedProperties = wrapAsync(
     async (req: Request, res: Response) => {
-      throw ApiError.notImplemented(
-        "handleGetRecommendedProperties is not yet implemented",
+      const { userId: clerkId } = getAuth(req);
+      if (!clerkId) throw ApiError.unauthorised();
+
+      const response = await ServiceHandleGetRecommendedProperties(clerkId);
+      return ApiResponse.ok(
+        res,
+        "recommended properties fetched successfully",
+        response ?? null,
       );
     },
   );

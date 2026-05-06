@@ -8,8 +8,8 @@ function AllLandlords() {
     <div className="p-10 bg-white min-h-screen">
       <h1 className="text-2xl font-semibold mb-6">All Landlords</h1>
 
-      <div className="border border-black rounded-lg overflow-hidden">
-        <table className="w-full text-left">
+      <div className="border border-black rounded-lg overflow-x-auto">
+        <table className="w-full min-w-[640px] text-left">
           <thead className="border-b border-black">
             <tr>
               <th className="p-4">Name</th>

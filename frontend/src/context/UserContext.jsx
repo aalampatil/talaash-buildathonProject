@@ -1,10 +1,12 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { axiosApi } from "../config/axiosApi";
 import { toast } from "react-toastify";
+import { useAuth } from "@clerk/clerk-react";
 
 const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
+  const { getToken, isLoaded, isSignedIn, signOut } = useAuth();
   const [user, setUser] = useState(null);
   const [authStatus, setAuthStatus] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -12,60 +14,65 @@ export const UserContextProvider = ({ children }) => {
   const [visits, setVisits] = useState([]);
   const [savedProperties, setSavedProperties] = useState([]);
 
-  const verified = async () => {
+  const verified = useCallback(async () => {
+    if (!isLoaded) return;
+
+    if (!isSignedIn) {
+      setUser(null);
+      setAuthStatus(false);
+      setTenantProfile({});
+      setVisits([]);
+      setSavedProperties([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await axiosApi.get("/user/me");
-      console.log(response.data);
       if (response.data.success) {
         setUser(response.data.data);
         setAuthStatus(true);
       }
     } catch (error) {
       setUser(null);
-      setAuthStatus((prev) => !prev);
-      // setTenantProfile({});
-      // setVisits([]);
-      // setSavedProperties([]);
-      throw error;
+      setAuthStatus(false);
+      console.error(error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [isLoaded, isSignedIn]);
 
   const fetchTenant = async () => {
     try {
       const response = await axiosApi.get("/tenant/profile");
-      // console.log(response.data);
       if (response.data.success) {
         setTenantProfile(response.data.data);
         setSavedProperties(response.data.data.savedProperties);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const fetchVisits = async () => {
     try {
       const response = await axiosApi.get("/tenant/visits");
-      // console.log(response.data);
       if (response.data.success) {
         setVisits(response.data.data);
-        // await fetchVisits();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const logoutUser = async () => {
     try {
-      await axiosApi.post("/user/logout");
+      await signOut();
       setUser(null);
       setAuthStatus(false);
       toast.success("logged out");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -75,13 +82,10 @@ export const UserContextProvider = ({ children }) => {
 
       if (response.data.success) {
         toast.success(response.data.message);
-
-        setSavedProperties((prev) =>
-          prev.includes(id) ? prev : [...prev, id],
-        );
+        await fetchTenant();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -90,19 +94,19 @@ export const UserContextProvider = ({ children }) => {
       const response = await axiosApi.post(`tenant/remove-property/${id}`);
       if (response.data.success) {
         toast.success(response.data.message);
-        setSavedProperties((prev) => prev.filter((propId) => propId !== id));
+        await fetchTenant();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const requestVisit = async (propertyId, visitDate) => {
     try {
       await axiosApi.post(`tenant/request-visit`, { propertyId, visitDate });
-      // await fetchVisits();
+      await fetchVisits();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
   const cancelVisit = async (id) => {
@@ -110,19 +114,34 @@ export const UserContextProvider = ({ children }) => {
       await axiosApi.post(`tenant/cancel-visit/${id}`);
       await fetchVisits();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   useEffect(() => {
-    verified();
-    fetchTenant();
-    fetchVisits();
-  }, []);
+    const interceptorId = axiosApi.interceptors.request.use(async (config) => {
+      const token = await getToken();
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    });
+
+    return () => {
+      axiosApi.interceptors.request.eject(interceptorId);
+    };
+  }, [getToken]);
 
   useEffect(() => {
+    if (!isLoaded) return;
+    verified();
+  }, [isLoaded, verified]);
+
+  useEffect(() => {
+    if (!authStatus || user?.role !== "tenant") return;
     fetchTenant();
-  }, [saveProp]);
+    fetchVisits();
+  }, [authStatus, user]);
 
   const value = {
     user,

@@ -1,9 +1,7 @@
 import { Link } from "react-router";
-import { UsePropertyContext } from "../../context/PropertyContext";
+import { getPropertyImageUrl } from "../../lib/propertyImage";
 
 function PropertyCard({ id, image, title, price }) {
-  // const { searchProperty } = UsePropertyContext();
-
   return (
     <Link
       to={`/property/${id}`}
@@ -11,7 +9,7 @@ function PropertyCard({ id, image, title, price }) {
     >
       <div className="relative">
         <img
-          src={image}
+          src={getPropertyImageUrl(image)}
           alt={title}
           className="w-full h-48 md:h-72 object-cover rounded-xl"
         />

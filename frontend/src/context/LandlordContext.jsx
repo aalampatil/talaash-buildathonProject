@@ -2,73 +2,67 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { axiosApi } from "../config/axiosApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { UseUserContext } from "./UserContext";
 
 const LandlordContext = createContext();
 
 export const LandlordContextProvider = ({ children }) => {
+  const { authStatus, user } = UseUserContext();
   const [landlordProperties, setLandlordProperties] = useState([]);
   const [landlordProfile, setLandlordProfile] = useState({});
   const [manageVisits, setManageVisits] = useState([]);
   // const [llProperty, setLlProperty] = useState({})
   const navigate = useNavigate();
 
-  //fetch on first render
   const fetchLandlordProfile = async () => {
     try {
       const response = await axiosApi.get("/landlord/profile");
-      // console.log(response.data);
       if (response.data.success) {
         setLandlordProfile(response.data.data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
-  //fetch on first render
   const fetchLandlordProperties = async () => {
     try {
       const response = await axiosApi.get("/landlord/property");
-      // console.log(response.data);
       if (response.data.success) {
         setLandlordProperties(response.data.data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
-  //fetch on first render
   const fetchVisits = async () => {
     try {
       const response = await axiosApi.get("/landlord/visits");
-      // console.log(response.data);
       if (response.data.success) {
         setManageVisits(response.data.data);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const createLandlordProperty = async (data) => {
     try {
       const response = await axiosApi.post("/landlord/property", data);
-      // console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
         await fetchLandlordProperties(); // refresh list
         navigate("/dashboard/landlord/properties");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const deleteLandlordProperty = async (id) => {
     try {
       const response = await axiosApi.delete(`/landlord/property/${id}`);
-      // console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
         await fetchLandlordProperties();
@@ -77,7 +71,7 @@ export const LandlordContextProvider = ({ children }) => {
         );
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("request failed, retry after some time");
     }
   };
@@ -85,13 +79,12 @@ export const LandlordContextProvider = ({ children }) => {
   const approveVisit = async (id) => {
     try {
       const response = await axiosApi.patch(`/landlord/visit/approve/${id}`);
-      // console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
         await fetchVisits();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("request failed, retry after some time");
     }
   };
@@ -99,13 +92,12 @@ export const LandlordContextProvider = ({ children }) => {
   const rejectVisit = async (id) => {
     try {
       const response = await axiosApi.patch(`/landlord/visit/reject/${id}`);
-      console.log(response.data);
       if (response.data.success) {
         toast.success(response.data.message);
         await fetchVisits();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("request failed, retry after some time");
     }
   };
@@ -116,10 +108,12 @@ export const LandlordContextProvider = ({ children }) => {
   // }
 
   useEffect(() => {
+    if (!authStatus || user?.role !== "landlord") return;
+
     fetchLandlordProfile();
     fetchLandlordProperties();
     fetchVisits();
-  }, []);
+  }, [authStatus, user]);
 
   const value = {
     approveVisit,

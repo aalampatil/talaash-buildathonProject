@@ -1,50 +1,36 @@
-import { User } from "./user.model.js";
 import type { Request, Response } from "express";
-import {
-  userValidationSchema,
-  type UserDTO,
-} from "../../common/validations/user.validation.js";
-import { Tenant } from "../tenant/tenant.model.js";
-import { Landlord } from "../landord/landlord.model.js";
 import ApiError from "../../common/utils/api-error.js";
 import { getAuth } from "@clerk/express";
+import { verifyWebhook } from "@clerk/express/webhooks";
+import { ApiResponse } from "../../common/utils/api-response.js";
+import {
+  handleClerkWebhookEvent,
+  syncUserFromClerkId,
+} from "./user.service.js";
+import { env } from "../../env.js";
 
 export class UserController {
-  public async handleUserRegister(req: Request, res: Response) {
+  public async handleClerkWebhook(req: Request, res: Response) {
     try {
-      const data = userValidationSchema.parse(req.body);
-
-      const user = await User.create(data);
-
-      if (user.role === "tenant") {
-        await Tenant.create({
-          userId: user._id,
-          clerkId: user.clerkId,
-        });
-      }
-
-      if (user.role === "landlord") {
-        await Landlord.create({
-          userId: user._id,
-          clerkId: user.clerkId,
-        });
-      }
-
-      return res.status(201).json({
-        success: true,
-        user,
+      const event = await verifyWebhook(req, {
+        signingSecret: env.CLERK_WEBHOOK_SIGNING_SECRET,
       });
+
+      await handleClerkWebhookEvent(event);
+      return ApiResponse.ok(res, "webhook received", null);
     } catch (error) {
-      res.status(400).json({ error });
+      console.error("Clerk webhook verification failed:", error);
+      throw ApiError.badRequest("Invalid Clerk webhook");
     }
   }
 
   public async handleGetUser(req: Request, res: Response) {
     const { userId: clerkId } = getAuth(req);
-    if (!clerkId) throw ApiError.badRequest();
-    const user = await User.findOne({ clerkId });
-    console.log(user);
-    if (!user) throw ApiError.notfound;
-    return res.status(201).json({ user });
+    if (!clerkId) throw ApiError.unauthorised();
+
+    const user = await syncUserFromClerkId(clerkId);
+    if (!user) throw ApiError.notfound("User has no primary email in Clerk");
+
+    return ApiResponse.ok(res, "user fetched successfully", user);
   }
 }

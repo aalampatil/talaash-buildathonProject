@@ -3,14 +3,31 @@ import { UseUserContext } from "../../context/UserContext";
 import { toast } from "react-toastify";
 import { useParams } from "react-router-dom";
 import { axiosApi } from "../../config/axiosApi";
+import { getPropertyImageUrl } from "../../lib/propertyImage";
 
 function Property() {
   // const { searchProperty } = UsePropertyContext();
-  const [property, setProperty] = useState({});
+  const [property, setProperty] = useState(null);
   const { requestVisit, saveProp } = UseUserContext();
 
   const [showVisitBox, setShowVisitBox] = useState(false);
   const [visitDate, setVisitDate] = useState("");
+  const { id } = useParams();
+
+  const searchProperty = async (id) => {
+    try {
+      const response = await axiosApi.get(`/property/${id}`);
+      if (response.data.success) {
+        setProperty(response.data.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    searchProperty(id);
+  }, [id]);
 
   if (!property) {
     return (
@@ -19,23 +36,6 @@ function Property() {
       </div>
     );
   }
-
-  const searchProperty = async (id) => {
-    try {
-      const response = await axiosApi.get(`/property/${id}`);
-      console.log(response.data);
-      if (response.data.success) {
-        setProperty(response.data.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const { id } = useParams();
-  useEffect(() => {
-    searchProperty(id);
-  }, [id]);
 
   const handleVisitRequest = () => {
     if (!visitDate) {
@@ -63,7 +63,7 @@ function Property() {
           property.images.map((img, i) => (
             <img
               key={i}
-              src={img}
+              src={getPropertyImageUrl(img)}
               alt="property"
               className="w-full h-56 object-cover rounded-lg"
             />

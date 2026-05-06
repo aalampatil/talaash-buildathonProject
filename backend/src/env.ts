@@ -7,9 +7,9 @@ const envSchema = z.object({
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
   CLIENT: z.string(),
-  SERVER: z.string(),
   CLERK_PUBLISHABLE_KEY: z.string(),
   CLERK_SECRET_KEY: z.string(),
+  CLERK_WEBHOOK_SIGNING_SECRET: z.string(),
   ADMIN_EMAIL: z.string(),
 });
 

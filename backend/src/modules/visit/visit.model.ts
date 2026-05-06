@@ -53,5 +53,5 @@ export type VisitDocument = InferSchemaType<typeof visitSchema> & {
   _id: mongoose.Types.ObjectId;
 };
 
-export const VisitModel =
-  mongoose.models.Visit || mongoose.model("Visit", visitSchema);
+export const Visit =
+  mongoose.models.Visit || mongoose.model<VisitDocument>("Visit", visitSchema);

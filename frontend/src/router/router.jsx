@@ -8,10 +8,6 @@ import Property from "../pages/user/Property.jsx";
 import TenantProfile from "../pages/user/TenantProfile.jsx";
 import TenantVisits from "../pages/user/TenantVisits.jsx";
 import SavedProperties from "../pages/user/SavedProperties.jsx";
-import { UserContextProvider } from "../context/UserContext.jsx";
-import { AdminContextProvider } from "../context/AdminContext.jsx";
-import { LandlordContextProvider } from "../context/LandlordContext.jsx";
-import { PropertyContextProvider } from "../context/PropertyContext.jsx";
 import Login from "../Google-Login/Login.jsx";
 import ProtectedUser from "../config/ProtectedUser.jsx";
 import ProtectedLandlord from "../config/ProtectedLandlord.jsx";
@@ -22,8 +18,8 @@ import LandlordProperties from "../components/LandlordComponents/LandlordPropert
 import Dashboard from "../pages/admin/Dashboard.jsx";
 import AllUsers from "../pages/admin/AllUsers.jsx";
 import AllProperties from "../pages/admin/AllProperties.jsx";
-import AllLandlord from "../pages/admin/AllLandlords.jsx";
 import AllLandlords from "../pages/admin/AllLandlords.jsx";
+import Providers from "./Providers.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -109,7 +105,7 @@ export const router = createBrowserRouter([
     path: "/dashboard/admin",
     element: (
       <Providers>
-        <ProtectedAdmin>
+        <ProtectedAdmin authentication>
           <AdminLayout />
         </ProtectedAdmin>
       </Providers>
@@ -143,21 +139,11 @@ export const router = createBrowserRouter([
     element: <Login />,
   },
   {
-  path: "/login",
-  loader: () => redirect("/login/tenant")
-}
+    path: "/login/admin",
+    element: <Login />,
+  },
+  {
+    path: "/login",
+    loader: () => redirect("/login/tenant"),
+  },
 ]);
-
-function Providers({ children }) {
-  return (
-    <UserContextProvider>
-      {/* <AuthContextProvider> */}
-      <AdminContextProvider>
-        <LandlordContextProvider>
-          <PropertyContextProvider>{children}</PropertyContextProvider>
-        </LandlordContextProvider>
-      </AdminContextProvider>
-      {/* </AuthContextProvider> */}
-    </UserContextProvider>
-  );
-}

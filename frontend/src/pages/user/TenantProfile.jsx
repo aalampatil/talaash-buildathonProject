@@ -1,165 +1,193 @@
-// TenantProfileEditable.jsx
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { axiosApi } from "../../config/axiosApi";
 import { UseUserContext } from "../../context/UserContext";
 
-const TenantProfileEditable = () => {
-  const { tenantProfile } = UseUserContext();
-  const [edit, setEdit] = useState(false);
+const defaultPreferences = {
+  householdType: "single",
+  city: "",
+  location: "",
+  minBudget: 1000,
+  maxBudget: 100000,
+  propertyType: "1BHK",
+};
 
-  if (!tenantProfile || !tenantProfile.profile) {
+const TenantProfile = () => {
+  const { tenantProfile, fetchTenant } = UseUserContext();
+  const [edit, setEdit] = useState(false);
+  const [formData, setFormData] = useState(defaultPreferences);
+
+  const profile = tenantProfile?.profile;
+  const preferences = tenantProfile?.preferences;
+
+  useEffect(() => {
+    setFormData({
+      ...defaultPreferences,
+      ...(preferences || {}),
+    });
+  }, [preferences]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        name === "minBudget" || name === "maxBudget" ? Number(value) : value,
+    }));
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await axiosApi.patch("/tenant/preferences", formData);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        await fetchTenant();
+        setEdit(false);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Could not update preferences");
+    }
+  };
+
+  if (!profile) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen text-gray-500">
         Loading profile...
       </div>
     );
   }
 
-  const { profile } = tenantProfile;
-
-  const [formData, setFormData] = useState({
-    householdType: tenantProfile?.householdType || "Single",
-    city: tenantProfile?.preferences?.location?.city || "Mumbai",
-    budget: tenantProfile?.preferences?.budget || "Rs10000",
-    propertyType: "2BHK",
-  });
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleSave = () => {
-    console.log("Updated data:", formData);
-    setEdit(false);
-  };
-
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-2xl mx-auto border border-black p-6 space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold">Tenant Profile</h2>
+    <div className="min-h-screen bg-white px-4 py-8">
+      <div className="mx-auto max-w-3xl border border-gray-200 rounded-lg p-6">
+        <div className="flex items-start justify-between gap-4 border-b pb-5">
+          <div>
+            <h1 className="text-2xl font-semibold">{profile.name}</h1>
+            <p className="text-sm text-gray-600">{profile.email}</p>
+            {profile.phone && (
+              <p className="text-sm text-gray-600">{profile.phone}</p>
+            )}
+          </div>
 
           <button
+            type="button"
             onClick={() => (edit ? handleSave() : setEdit(true))}
-            className="border border-black px-4 py-1"
+            className="border border-black px-4 py-2 text-sm hover:bg-black hover:text-white transition"
           >
             {edit ? "Save" : "Edit"}
           </button>
         </div>
 
-        {/* Profile */}
-        <div className="flex items-center gap-4">
-          <img
-            src={profile.profilePicture}
-            alt="profile"
-            className="w-16 h-16 border border-black rounded-full object-cover"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+          <Field label="Household Type">
+            {edit ? (
+              <select
+                name="householdType"
+                value={formData.householdType}
+                onChange={handleChange}
+                className="border border-gray-300 p-2 rounded"
+              >
+                <option value="single">Single</option>
+                <option value="family">Family</option>
+                <option value="room">Room</option>
+              </select>
+            ) : (
+              <ReadValue value={formData.householdType} />
+            )}
+          </Field>
 
-          <div>
-            <p className="font-medium">{profile.name}</p>
-            <p className="text-sm">{profile.email}</p>
-          </div>
-        </div>
+          <Field label="Property Type">
+            {edit ? (
+              <select
+                name="propertyType"
+                value={formData.propertyType}
+                onChange={handleChange}
+                className="border border-gray-300 p-2 rounded"
+              >
+                <option value="1BHK">1BHK</option>
+                <option value="2BHK">2BHK</option>
+                <option value="3BHK">3BHK</option>
+              </select>
+            ) : (
+              <ReadValue value={formData.propertyType} />
+            )}
+          </Field>
 
-        {/* Household Type */}
-        <div className="flex flex-col">
-          <label className="text-sm mb-1">Household Type</label>
+          <Field label="City">
+            {edit ? (
+              <input
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                className="border border-gray-300 p-2 rounded"
+              />
+            ) : (
+              <ReadValue value={formData.city} />
+            )}
+          </Field>
 
-          {edit ? (
-            <select
-              name="householdType"
-              value={formData.householdType}
-              onChange={handleChange}
-              className="border border-black p-2"
-            >
-              <option value="single">Single</option>
-              <option value="family">Family</option>
-              <option value="roommates">Roommates</option>
-            </select>
-          ) : (
-            <p className="border border-black p-2">{formData.householdType}</p>
-          )}
-        </div>
+          <Field label="Location">
+            {edit ? (
+              <input
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                className="border border-gray-300 p-2 rounded"
+              />
+            ) : (
+              <ReadValue value={formData.location} />
+            )}
+          </Field>
 
-        {/* City */}
-        <div className="flex flex-col">
-          <label className="text-sm mb-1">Preferred City</label>
+          <Field label="Minimum Budget">
+            {edit ? (
+              <input
+                type="number"
+                name="minBudget"
+                value={formData.minBudget}
+                onChange={handleChange}
+                className="border border-gray-300 p-2 rounded"
+              />
+            ) : (
+              <ReadValue value={`Rs ${formData.minBudget}`} />
+            )}
+          </Field>
 
-          {edit ? (
-            <select
-              name="city"
-              value={formData.city || "Delhi"}
-              onChange={handleChange}
-              className="border border-black p-2"
-            >
-              <option value="Delhi">Delhi</option>
-              <option value="Mumbai">Mumbai</option>
-              <option value="Bangalore">Bangalore</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Chennai">Chennai</option>
-              <option value="Kolkata">Kolkata</option>
-              <option value="Pune">Pune</option>
-              <option value="Ahmedabad">Ahmedabad</option>
-              <option value="Jaipur">Jaipur</option>
-              <option value="Goa">Goa</option>
-            </select>
-          ) : (
-            <p className="border border-black p-2">{formData.city}</p>
-          )}
-        </div>
-
-        {/* Budget */}
-        <div className="flex flex-col">
-          <label className="text-sm mb-1">Budget</label>
-
-          {edit ? (
-            <select
-              name="budget"
-              value={formData.budget}
-              onChange={handleChange}
-              className="border border-black p-2"
-            >
-              <option value="5000">Rs5,000</option>
-              <option value="10000">Rs10,000</option>
-              <option value="15000">Rs15,000</option>
-              <option value="20000">Rs20,000</option>
-              <option value="30000">Rs30,000</option>
-              <option value="40000">Rs40,000</option>
-              <option value="50000">Rs50,000+</option>
-            </select>
-          ) : (
-            <p className="border border-black p-2"> {formData.budget}</p>
-          )}
-        </div>
-
-        {/* Property Type */}
-        <div className="flex flex-col">
-          <label className="text-sm mb-1">Property Type</label>
-
-          {edit ? (
-            <select
-              name="propertyType"
-              value={formData.propertyType}
-              onChange={handleChange}
-              className="border border-black p-2"
-            >
-              <option value="">{formData.propertyType || "2BHK"}</option>
-
-              <option value="1BhK">1BHK</option>
-              <option value="2BHK">2BHK</option>
-              <option value="3BHK">3BHK</option>
-              <option value="room">room</option>
-            </select>
-          ) : (
-            <p className="border border-black p-2"> {formData.propertyType}</p>
-          )}
+          <Field label="Maximum Budget">
+            {edit ? (
+              <input
+                type="number"
+                name="maxBudget"
+                value={formData.maxBudget}
+                onChange={handleChange}
+                className="border border-gray-300 p-2 rounded"
+              />
+            ) : (
+              <ReadValue value={`Rs ${formData.maxBudget}`} />
+            )}
+          </Field>
         </div>
       </div>
     </div>
   );
 };
 
-export default TenantProfileEditable;
+function Field({ label, children }) {
+  return (
+    <label className="flex flex-col gap-1 text-sm">
+      <span className="font-medium text-gray-700">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+function ReadValue({ value }) {
+  return (
+    <span className="min-h-10 border border-gray-200 rounded p-2 capitalize text-gray-700">
+      {value || "Not set"}
+    </span>
+  );
+}
+
+export default TenantProfile;

@@ -3,19 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { UseUserContext } from "../context/UserContext";
 
 function ProtectedUser({ children, authentication }) {
-  const { authStatus, loading } = UseUserContext();
+  const { authStatus, loading, user } = UseUserContext();
   const navigate = useNavigate();
-  console.log(authStatus, loading);
 
   useEffect(() => {
     if (!loading) {
       if (authentication && !authStatus) {
         navigate("/login/tenant");
+      } else if (authentication && user?.role && user.role !== "tenant") {
+        navigate(
+          user.role === "landlord" ? "/dashboard/landlord" : "/dashboard/admin",
+        );
       } else if (!authentication && authStatus) {
         navigate("/");
       }
     }
-  }, [authStatus, authentication, navigate, loading]);
+  }, [authStatus, authentication, navigate, loading, user]);
 
   if (loading) {
     return (

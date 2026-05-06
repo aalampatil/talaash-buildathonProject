@@ -4,20 +4,33 @@ import { clerkMiddleware } from "@clerk/express";
 import type { Response } from "express";
 import { userRouter } from "./modules/user/user.routes.js";
 import { tenantRouter } from "./modules/tenant/tenant.routes.js";
+import { UserController } from "./modules/user/user.controller.js";
+import { wrapAsync } from "./common/utils/wrap-async.js";
+import { env } from "./env.js";
+import { propertyRouter } from "./modules/property/property.routes.js";
+import { landlordRouter } from "./modules/landord/landlord.routes.js";
+import { adminRouter } from "./modules/admin/admin.routes.js";
 
 export const createServerApplication = () => {
   const app = express();
+  const userController = new UserController();
 
   app.use(
     cors({
       origin: [
         "http://localhost:5173",
         "http://localhost:5174",
-        process.env.CLIENT as string,
+        env.CLIENT,
       ],
-      methods: ["GET", "POST", "PUT", "DELETE"],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
       credentials: true,
     }),
+  );
+
+  app.post(
+    "/api/webhooks/clerk",
+    express.raw({ type: "application/json" }),
+    wrapAsync(userController.handleClerkWebhook.bind(userController)),
   );
 
   app.use(express.json({ limit: "5mb" }));
@@ -30,5 +43,8 @@ export const createServerApplication = () => {
 
   app.use("/api/user", userRouter);
   app.use("/api/tenant", tenantRouter);
+  app.use("/api/property", propertyRouter);
+  app.use("/api/landlord", landlordRouter);
+  app.use("/api/admin", adminRouter);
   return app;
 };

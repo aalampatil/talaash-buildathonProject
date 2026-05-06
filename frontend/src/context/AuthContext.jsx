@@ -7,13 +7,9 @@ export const AuthContextProvider = ({ children }) => {
   const { user } = UseUserContext();
   const [role, setRole] = useState("User");
 
-  const initalizeRole = () => {
-    setRole(user.role);
-  };
   useEffect(() => {
-    initalizeRole();
-    console.log(user.role);
-  });
+    if (user?.role) setRole(user.role);
+  }, [user]);
   const value = { role };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

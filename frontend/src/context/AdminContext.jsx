@@ -1,9 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { axiosApi } from "../config/axiosApi";
+import { UseUserContext } from "./UserContext";
 
 const AdminContext = createContext();
 
 export const AdminContextProvider = ({ children }) => {
+  const { authStatus, user } = UseUserContext();
   const [allUsers, setAllUsers] = useState([]);
   const [allLandlords, setAllLandlords] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
@@ -22,7 +24,7 @@ export const AdminContextProvider = ({ children }) => {
         setTotalUsers(response.data.data.length);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -36,7 +38,7 @@ export const AdminContextProvider = ({ children }) => {
         setTotalLandlords(response.data.data.length);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -50,16 +52,18 @@ export const AdminContextProvider = ({ children }) => {
         setTotalProperties(response.data.data.length);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   // fetch everything when admin dashboard loads
   useEffect(() => {
+    if (!authStatus || user?.role !== "admin") return;
+
     fetchAllUsers();
     fetchAllLandlords();
     fetchAllProperties();
-  }, []);
+  }, [authStatus, user]);
 
   const value = {
     allUsers,

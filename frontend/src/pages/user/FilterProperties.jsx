@@ -22,11 +22,7 @@ function FilterProperties() {
             <PropertyCard
               key={property._id}
               id={property._id}
-              image={
-                property.images.length > 0
-                  ? property.images[0]
-                  : "https://placehold.co/600x400"
-              }
+              image={property.images?.[0]}
               title={`${property.propertyType} in ${property.location.city}`}
               price={`Rs ${property.rent}`}
             />

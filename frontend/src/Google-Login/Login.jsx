@@ -1,87 +1,88 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
-import { axiosApi } from "../config/axiosApi.js";
+import { SignIn, SignUp, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { useMemo, useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import logo from "../assets/logo.png";
 
-const GoogleLogin = () => {
+const roleRedirects = {
+  tenant: "/",
+  landlord: "/dashboard/landlord",
+  admin: "/dashboard/admin",
+};
+
+const getRoleFromPath = (pathname) => {
+  const role = pathname.split("/").pop();
+  if (role === "admin") return "admin";
+  return role === "landlord" ? "landlord" : "tenant";
+};
+
+const Login = () => {
   const location = useLocation();
-  const [loading, setLoading] = useState(false);
+  const role = getRoleFromPath(location.pathname);
+  const [mode, setMode] = useState("signup");
 
-  // Extract role from URL: "tenant" or "landlord"
-  console.log(location);
-  const currentRole = location.pathname.split("/").pop();
-
-  const handleClick = () => {
-    setLoading(true);
-    googleAuth(currentRole); // send role to your context function
-  };
-
-  const googleAuth = async (role) => {
-    try {
-      window.open(
-        `${axiosApi.defaults.baseURL}/user/google/${currentRole}?state=${role}`,
-        "_self",
-      );
-      //_self allows to open the page in current tab
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
+  const redirectUrl = roleRedirects[role];
+  const unsafeMetadata = useMemo(() => ({ role }), [role]);
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center relative px-4"
+      className="min-h-screen flex items-center justify-center relative px-4 py-10"
       style={{
         backgroundImage: `url(${logo})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {/* Overlay for better contrast */}
-      <div className="absolute inset-0 bg-black/40"></div>
+      <div className="absolute inset-0 bg-black/45" />
 
-      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-10 text-center flex flex-col items-center">
-        {/* Logo */}
-        <div className="mb-6">
-          <img
-            src={logo}
-            alt="Talaash Logo"
-            className="w-20 h-20 object-contain rounded-full shadow-md"
-          />
+      <SignedIn>
+        <Navigate to={redirectUrl} replace />
+      </SignedIn>
+
+      <SignedOut>
+        <div className="relative w-full max-w-md flex flex-col items-center gap-4">
+          <div className="flex w-full rounded-lg bg-white p-1 shadow">
+            <button
+              type="button"
+              onClick={() => setMode("signup")}
+              className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold transition ${
+                mode === "signup"
+                  ? "bg-black text-white"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              Sign up
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("signin")}
+              className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold transition ${
+                mode === "signin"
+                  ? "bg-black text-white"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`}
+            >
+              Sign in
+            </button>
+          </div>
+
+          {mode === "signup" ? (
+            <SignUp
+              unsafeMetadata={unsafeMetadata}
+              forceRedirectUrl={redirectUrl}
+              signInUrl={`/login/${role}`}
+              signInForceRedirectUrl={redirectUrl}
+            />
+          ) : (
+            <SignIn
+              forceRedirectUrl={redirectUrl}
+              signUpUrl={`/login/${role}`}
+              signUpForceRedirectUrl={redirectUrl}
+            />
+          )}
         </div>
-
-        {/* Title */}
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
-          Welcome to <span className="text-black">talaash</span>
-        </h1>
-        <p className="text-gray-600 mb-6">
-          You'll be signed up as <strong>{currentRole}</strong>
-        </p>
-
-        {/* Google Button */}
-        <button
-          onClick={handleClick}
-          disabled={loading}
-          className={`w-full flex items-center justify-center gap-3 py-3 px-6 border border-gray-300 rounded-xl font-semibold text-gray-800 hover:shadow-lg hover:scale-105 transition-all duration-300 ${
-            loading ? "opacity-60 cursor-not-allowed" : ""
-          }`}
-        >
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google"
-            className="w-6 h-6"
-          />
-          {loading ? "Redirecting..." : "Continue with Google"}
-        </button>
-
-        {/* Footer */}
-        <p className="text-xs text-gray-400 mt-6">
-          By continuing, you agree to our{" "}
-          <span className="underline">Terms & Privacy Policy</span>
-        </p>
-      </div>
+      </SignedOut>
     </div>
   );
 };
 
-export default GoogleLogin;
+export default Login;

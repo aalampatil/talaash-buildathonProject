@@ -10,7 +10,7 @@ export const userValidationSchema = z
 
     phone: z.string().optional(), // or validate below
 
-    role: z.enum(["tenant", "landlord"]),
+    role: z.enum(["tenant", "landlord", "admin"]),
 
     verified: z.boolean().default(false).describe("isVerified?"),
   })

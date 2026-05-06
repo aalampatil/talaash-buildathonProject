@@ -1,10 +1,10 @@
 import React from "react";
 import { UseUserContext } from "../../context/UserContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { getPropertyImageUrl } from "../../lib/propertyImage";
 
 function SavedProperties() {
   const { savedProperties } = UseUserContext();
-  const navigate = useNavigate();
 
   if (!savedProperties || savedProperties.length === 0) {
     return (
@@ -26,7 +26,7 @@ function SavedProperties() {
           >
             {/* Property Image */}
             <img
-              src={property.images?.[0]}
+              src={getPropertyImageUrl(property.images?.[0])}
               alt={property.title}
               className="w-48 h-32 object-cover rounded-md"
             />

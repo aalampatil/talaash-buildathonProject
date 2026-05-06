@@ -68,4 +68,5 @@ export type PropertyDocument = InferSchemaType<typeof propertySchema> & {
 };
 
 export const PropertyModel =
-  mongoose.models.Property || mongoose.model("Property", propertySchema);
+  (mongoose.models.Property as mongoose.Model<PropertyDocument>) ||
+  mongoose.model<PropertyDocument>("Property", propertySchema);
