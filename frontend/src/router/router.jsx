@@ -1,32 +1,60 @@
+import { lazy, Suspense } from "react";
 import { createBrowserRouter, redirect } from "react-router-dom";
-import { AdminLayout } from "../layouts/AdminLayout.jsx";
-import { LandlordLayout } from "../layouts/LandlordLayout.jsx";
-import { UserLayout } from "../layouts/UserLayout.jsx";
-import Homepage from "../pages/user/Homepage.jsx";
-import FilterProperties from "../pages/user/FilterProperties.jsx";
-import Property from "../pages/user/Property.jsx";
-import TenantProfile from "../pages/user/TenantProfile.jsx";
-import TenantVisits from "../pages/user/TenantVisits.jsx";
-import SavedProperties from "../pages/user/SavedProperties.jsx";
-import Login from "../Google-Login/Login.jsx";
 import ProtectedUser from "../config/ProtectedUser.jsx";
 import ProtectedLandlord from "../config/ProtectedLandlord.jsx";
 import ProtectedAdmin from "../config/ProtectedAdmin.jsx";
-import LandlordVisits from "../components/LandlordComponents/LandlordVisits.jsx";
-import AddProperty from "../components/LandlordComponents/AddProperty.jsx";
-import LandlordProperties from "../components/LandlordComponents/LandlordProperties.jsx";
-import Dashboard from "../pages/admin/Dashboard.jsx";
-import AllUsers from "../pages/admin/AllUsers.jsx";
-import AllProperties from "../pages/admin/AllProperties.jsx";
-import AllLandlords from "../pages/admin/AllLandlords.jsx";
 import Providers from "./Providers.jsx";
+
+const AdminLayout = lazy(() =>
+  import("../layouts/AdminLayout.jsx").then((module) => ({
+    default: module.AdminLayout,
+  })),
+);
+const LandlordLayout = lazy(() =>
+  import("../layouts/LandlordLayout.jsx").then((module) => ({
+    default: module.LandlordLayout,
+  })),
+);
+const UserLayout = lazy(() => import("../layouts/UserLayout.jsx"));
+const Homepage = lazy(() => import("../pages/user/Homepage.jsx"));
+const FilterProperties = lazy(() =>
+  import("../pages/user/FilterProperties.jsx"),
+);
+const Property = lazy(() => import("../pages/user/Property.jsx"));
+const TenantProfile = lazy(() => import("../pages/user/TenantProfile.jsx"));
+const TenantVisits = lazy(() => import("../pages/user/TenantVisits.jsx"));
+const SavedProperties = lazy(() => import("../pages/user/SavedProperties.jsx"));
+const Login = lazy(() => import("../Google-Login/Login.jsx"));
+const LandlordVisits = lazy(() =>
+  import("../components/LandlordComponents/LandlordVisits.jsx"),
+);
+const AddProperty = lazy(() =>
+  import("../components/LandlordComponents/AddProperty.jsx"),
+);
+const LandlordProperties = lazy(() =>
+  import("../components/LandlordComponents/LandlordProperties.jsx"),
+);
+const Dashboard = lazy(() => import("../pages/admin/Dashboard.jsx"));
+const AllUsers = lazy(() => import("../pages/admin/AllUsers.jsx"));
+const AllProperties = lazy(() => import("../pages/admin/AllProperties.jsx"));
+const AllLandlords = lazy(() => import("../pages/admin/AllLandlords.jsx"));
+
+const PageLoader = () => (
+  <div className="flex min-h-screen items-center justify-center bg-white">
+    <div className="h-10 w-10 animate-spin rounded-full border-4 border-red-500 border-t-transparent" />
+  </div>
+);
+
+const lazyElement = (element) => (
+  <Suspense fallback={<PageLoader />}>{element}</Suspense>
+);
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <Providers>
-        <UserLayout />
+        {lazyElement(<UserLayout />)}
       </Providers>
     ),
     children: [
@@ -70,13 +98,12 @@ export const router = createBrowserRouter([
     ],
   },
 
-  // landlord routes
   {
     path: "/dashboard/landlord",
     element: (
       <Providers>
         <ProtectedLandlord authentication>
-          <LandlordLayout />
+          {lazyElement(<LandlordLayout />)}
         </ProtectedLandlord>
       </Providers>
     ),
@@ -100,13 +127,12 @@ export const router = createBrowserRouter([
     ],
   },
 
-  // admin routes
   {
     path: "/dashboard/admin",
     element: (
       <Providers>
         <ProtectedAdmin authentication>
-          <AdminLayout />
+          {lazyElement(<AdminLayout />)}
         </ProtectedAdmin>
       </Providers>
     ),
@@ -132,15 +158,15 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login/tenant",
-    element: <Login />,
+    element: lazyElement(<Login />),
   },
   {
     path: "/login/landlord",
-    element: <Login />,
+    element: lazyElement(<Login />),
   },
   {
     path: "/login/admin",
-    element: <Login />,
+    element: lazyElement(<Login />),
   },
   {
     path: "/login",

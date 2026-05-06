@@ -6,15 +6,20 @@ import { StrictMode } from "react";
 import { ClerkProvider } from "@clerk/clerk-react";
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const rootElement = document.getElementById("root");
 
 if (!clerkPublishableKey) {
-  throw new Error("Missing VITE_CLERK_PUBLISHABLE_KEY");
+  createRoot(rootElement).render(
+    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      Missing VITE_CLERK_PUBLISHABLE_KEY
+    </div>,
+  );
+} else {
+  createRoot(rootElement).render(
+    <StrictMode>
+      <ClerkProvider publishableKey={clerkPublishableKey}>
+        <RouterProvider router={router} />
+      </ClerkProvider>
+    </StrictMode>,
+  );
 }
-
-createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <ClerkProvider publishableKey={clerkPublishableKey}>
-      <RouterProvider router={router} />
-    </ClerkProvider>
-  </StrictMode>,
-);

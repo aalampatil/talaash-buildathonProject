@@ -87,8 +87,9 @@ function HeroSection() {
         {/* RIGHT IMAGE */}
         <div className="flex-1 flex justify-center">
           <img
-            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa"
+            src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=900&q=75"
             alt="home"
+            fetchPriority="high"
             className="w-full max-w-md md:max-w-lg rounded-2xl shadow-xl object-cover"
           />
         </div>

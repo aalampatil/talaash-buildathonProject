@@ -41,10 +41,13 @@ export const createServerApplication = () => {
     res.send("OK 200, check");
   });
 
-  app.use("/api/user", userRouter);
-  app.use("/api/tenant", tenantRouter);
-  app.use("/api/property", propertyRouter);
-  app.use("/api/landlord", landlordRouter);
-  app.use("/api/admin", adminRouter);
+  for (const prefix of ["/api", "/api/v1"]) {
+    app.use(`${prefix}/user`, userRouter);
+    app.use(`${prefix}/tenant`, tenantRouter);
+    app.use(`${prefix}/property`, propertyRouter);
+    app.use(`${prefix}/landlord`, landlordRouter);
+    app.use(`${prefix}/admin`, adminRouter);
+  }
+
   return app;
 };
