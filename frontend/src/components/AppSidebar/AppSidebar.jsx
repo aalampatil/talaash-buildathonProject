@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import { UseUserContext } from "../../context/UserContext";
 
 export default function AppSidebar({ role }) {
-  const { logoutUser } = UseUserContext();
+  const { becomeLandlord, logoutUser } = UseUserContext();
 
   function handleClick() {
     logoutUser();
@@ -37,7 +37,7 @@ export default function AppSidebar({ role }) {
                   </SidebarMenuItem>
 
                   <SidebarMenuItem>
-                    <Link to="/dashboard/landlord">Become a Host</Link>
+                    <button onClick={becomeLandlord}>Become a Host</button>
                   </SidebarMenuItem>
                 </>
               )}

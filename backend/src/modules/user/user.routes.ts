@@ -8,3 +8,7 @@ const controller = new UserController();
 
 userRouter.get("/me", wrapAsync(controller.handleGetUser.bind(controller)));
 userRouter.get("/getUser", wrapAsync(controller.handleGetUser.bind(controller)));
+userRouter.post(
+  "/become-landlord",
+  wrapAsync(controller.handleBecomeLandlord.bind(controller)),
+);

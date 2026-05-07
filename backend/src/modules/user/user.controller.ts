@@ -4,6 +4,7 @@ import { getAuth } from "@clerk/express";
 import { verifyWebhook } from "@clerk/express/webhooks";
 import { ApiResponse } from "../../common/utils/api-response.js";
 import {
+  becomeLandlord,
   handleClerkWebhookEvent,
   syncUserFromClerkId,
 } from "./user.service.js";
@@ -32,5 +33,13 @@ export class UserController {
     if (!user) throw ApiError.notfound("User has no primary email in Clerk");
 
     return ApiResponse.ok(res, "user fetched successfully", user);
+  }
+
+  public async handleBecomeLandlord(req: Request, res: Response) {
+    const { userId: clerkId } = getAuth(req);
+    if (!clerkId) throw ApiError.unauthorised();
+
+    const user = await becomeLandlord(clerkId);
+    return ApiResponse.ok(res, "landlord account activated", user);
   }
 }

@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { UseUserContext } from "../../context/UserContext";
 
 function HeroSection() {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const { authStatus, becomeLandlord, user } = UseUserContext();
 
   useEffect(() => {
     const show = localStorage.getItem("showDisclaimer");
@@ -76,11 +78,29 @@ function HeroSection() {
               Explore Homes
             </Link>
 
-            <Link to="/dashboard/landlord">
-              <button className="border border-red-600 text-red-900 px-6 py-3 rounded-lg font-medium hover:bg-red-100 transition">
+            {authStatus && user?.role === "tenant" ? (
+              <button
+                type="button"
+                onClick={becomeLandlord}
+                className="border border-red-600 text-red-900 px-6 py-3 rounded-lg font-medium hover:bg-red-100 transition"
+              >
                 List Your Property
               </button>
-            </Link>
+            ) : authStatus && user?.role === "landlord" ? (
+              <Link
+                to="/dashboard/landlord"
+                className="border border-red-600 text-red-900 px-6 py-3 rounded-lg font-medium hover:bg-red-100 transition"
+              >
+                List Your Property
+              </Link>
+            ) : (
+              <Link
+                to="/login/landlord"
+                className="border border-red-600 text-red-900 px-6 py-3 rounded-lg font-medium hover:bg-red-100 transition"
+              >
+                List Your Property
+              </Link>
+            )}
           </div>
         </div>
 

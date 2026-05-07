@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { UsePropertyContext } from "../../context/PropertyContext";
+import { indianCities } from "../../data/indianCities";
 
 function SearchFilter() {
   const [city, setCity] = useState("Delhi");
@@ -18,23 +19,18 @@ function SearchFilter() {
               Where
             </span>
 
-            <select
-              value={location}
+            <input
+              list="indian-cities"
+              value={city}
               onChange={(e) => setCity(e.target.value)}
+              placeholder="Search any Indian city"
               className="outline-none text-xs text-gray-700 bg-transparent"
-            >
-              <option value="">{city}</option>
-              <option value="Delhi">Delhi</option>
-              <option value="Mumbai">Mumbai</option>
-              <option value="Bangalore">Bangalore</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Chennai">Chennai</option>
-              <option value="Kolkata">Kolkata</option>
-              <option value="Pune">Pune</option>
-              <option value="Ahmedabad">Ahmedabad</option>
-              <option value="Jaipur">Jaipur</option>
-              <option value="Goa">Goa</option>
-            </select>
+            />
+            <datalist id="indian-cities">
+              {indianCities.map((cityName) => (
+                <option key={cityName} value={cityName} />
+              ))}
+            </datalist>
           </div>
 
           {/* divider desktop */}
@@ -75,7 +71,7 @@ function SearchFilter() {
             >
               <option value="">{propertyType}</option>
 
-              <option value="1BhK">1BhK</option>
+              <option value="1BHK">1BHK</option>
               <option value="2BHK">2BHK</option>
               <option value="3BHK">3BHK</option>
               <option value="room">room</option>

@@ -4,6 +4,7 @@ import { Landlord } from "../landord/landlord.model.js";
 import { Tenant } from "../tenant/tenant.model.js";
 import { User, type UserDocument } from "./user.model.js";
 import { env } from "../../env.js";
+import ApiError from "../../common/utils/api-error.js";
 
 type AppRole = "tenant" | "landlord" | "admin";
 
@@ -71,6 +72,35 @@ const ensureRoleProfile = async (user: UserDocument) => {
     { $setOnInsert: { userId: user._id, clerkId: user.clerkId } },
     { upsert: true },
   );
+};
+
+const becomeLandlord = async (clerkId: string) => {
+  const clerkUser = await clerkClient.users.getUser(clerkId);
+  const email = clerkUser.emailAddresses.find(
+    (item) => item.id === clerkUser.primaryEmailAddressId,
+  );
+
+  if (email?.emailAddress.toLowerCase() === env.ADMIN_EMAIL.toLowerCase()) {
+    throw ApiError.badRequest("Admin users cannot become landlords");
+  }
+
+  await clerkClient.users.updateUserMetadata(clerkId, {
+    unsafeMetadata: {
+      ...clerkUser.unsafeMetadata,
+      role: "landlord",
+    },
+  });
+
+  const user = await User.findOneAndUpdate(
+    { clerkId },
+    { $set: { role: "landlord" } },
+    { new: true },
+  );
+
+  if (!user) throw ApiError.notfound("User not found");
+
+  await ensureRoleProfile(user);
+  return user;
 };
 
 const syncUserFromClerkUser = async (clerkUser: ClerkUserLike) => {
@@ -143,6 +173,7 @@ const handleClerkWebhookEvent = async (event: WebhookEvent) => {
 
 export {
   deleteUserFromClerkId,
+  becomeLandlord,
   handleClerkWebhookEvent,
   syncUserFromClerkId,
   syncUserFromClerkUser,

@@ -2,11 +2,13 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 import { axiosApi } from "../config/axiosApi";
 import { toast } from "react-toastify";
 import { useAuth } from "@clerk/clerk-react";
+import { useNavigate } from "react-router-dom";
 
 const UserContext = createContext();
 
 export const UserContextProvider = ({ children }) => {
   const { getToken, isLoaded, isSignedIn, signOut } = useAuth();
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [authStatus, setAuthStatus] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -72,6 +74,21 @@ export const UserContextProvider = ({ children }) => {
       setAuthStatus(false);
       toast.success("logged out");
     } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const becomeLandlord = async () => {
+    try {
+      const response = await axiosApi.post("/user/become-landlord");
+      if (response.data.success) {
+        setUser(response.data.data);
+        setAuthStatus(true);
+        toast.success(response.data.message);
+        navigate("/dashboard/landlord");
+      }
+    } catch (error) {
+      toast.error("Could not activate landlord account");
       console.error(error);
     }
   };
@@ -156,6 +173,7 @@ export const UserContextProvider = ({ children }) => {
     fetchTenant,
     fetchVisits,
     logoutUser,
+    becomeLandlord,
     saveProp,
     removeProp,
     requestVisit,
